@@ -1,0 +1,54 @@
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+rootProject.name = "Food Recipes"
+include ':app'
+include ':feature'
+
+include ':feature:newfeature'
+include ':feature:newfeature:ui'
+include ':feature:newfeature:presentation'
+include ':feature:newfeature:domain'
+include ':feature:newfeature:data'
+include ':feature:newfeature:datasource'
+
+include ':feature:recipes'
+include ':feature:recipes:ui'
+include ':feature:recipes:presentation'
+include ':feature:recipes:domain'
+include ':feature:recipes:data'
+include ':feature:recipes:datasource'
+
+include ':feature:favoriterecipes'
+include ':feature:favoriterecipes:ui'
+include ':feature:favoriterecipes:presentation'
+include ':feature:favoriterecipes:domain'
+include ':feature:favoriterecipes:data'
+include ':feature:favoriterecipes:datasource'
+
+include ':feature:foodjoke'
+include ':feature:foodjoke:ui'
+include ':feature:foodjoke:presentation'
+include ':feature:foodjoke:domain'
+include ':feature:foodjoke:data'
+include ':feature:foodjoke:datasource'
+
+include ':core'
+include ':core:ui'
+include ':core:presentation'
+include ':core:domain'
+include ':core:data'
+include ':core:datasource'
+include ':common'

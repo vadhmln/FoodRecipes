@@ -1,0 +1,148 @@
+[versions]
+compileSdk = "33"
+targetSdk = "33"
+minSdk = "26"
+
+gradle-android = "7.4.2"
+kotlin = "1.7.21"
+
+kotlinxCoroutinesAndroid = "1.6.4"
+
+androidxLifecycle = "2.5.1"
+appcompat = "1.6.1"
+androidxCore = "1.9.0"
+jvm = "5.4.1"
+javax = "1"
+
+androidMaterial = "1.8.0"
+constraintLayout = "2.1.4"
+androidxNavigationRuntime = "2.5.3"
+androidxNavigation = "2.5.3"
+androidxFragment = "1.5.5"
+
+room = "2.5.0"
+hiltAndroidGradlePlugin = "2.44.2"
+
+#Testing
+testCore = "1.5.0"
+junitKtx = "1.1.5"
+junit = "4.13.2"
+junitUpiter = "5.9.1"
+junitExt = "1.1.5"
+espressoCore = "3.5.1"
+mockitoCore = "4.5.1"
+mockitoKotlin = "4.1.0"
+
+hilt = "2.44.2"
+hiltLifecycle = "1.0.0-alpha03"
+coil = "2.2.2"
+gson = "2.9.0"
+jsoup = "1.14.3"
+shimmer = "0.5.0"
+
+[libraries]
+#Android
+
+androidx-core = { module = "androidx.core:core-ktx", version.ref = "androidxCore" }
+androidx-lifecycle-runtime = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidxLifecycle" }
+androidx-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "androidxLifecycle" }
+androidx-lifecycle-livedata = { module = "androidx.lifecycle:lifecycle-livedata-core", version.ref = "androidxLifecycle" }
+androidx-lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "androidxLifecycle" }
+androidx-lifecycle-compiler = { module = "androidx.lifecycle:lifecycle-compiler", version.ref = "androidxLifecycle" }
+androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
+androidx-appcompat-resources = { module = "androidx.appcompat:appcompat-resources", version.ref = "appcompat" }
+android-material = { module = "com.google.android.material:material", version.ref = "androidMaterial" }
+coil = { module = "io.coil-kt:coil", version.ref = "coil" }
+constraint-layout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintLayout" }
+androidx-navigation = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "androidxNavigation" }
+androidx-navigation-runtime = { module = "androidx.navigation:navigation-runtime-ktx", version.ref = "androidxNavigation" }
+androidx-navigation-ui = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "androidxNavigation" }
+androidx-fragment = { module = "androidx.fragment:fragment-ktx", version.ref = "androidxFragment" }
+
+
+#Room
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
+jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
+room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
+room-testing = { module = "androidx.room:room-testing", version.ref = "room" }
+
+#Testing
+junit = { module = "junit:junit", version.ref = "junit" }
+junit-upiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junitUpiter" }
+junit-ext = { module = "androidx.test.ext:junit", version.ref = "junitExt" }
+androidx-junit-ktx = { module = "androidx.test.ext:junit-ktx", version.ref = "junitKtx" }
+shimmer = { module = "com.facebook.shimmer:shimmer", version.ref = "shimmer" }
+test-core = { module = "androidx.test:core", version.ref = "testCore" }
+test-core-ktx = { module = "androidx.test:core-ktx", version.ref = "testCore" }
+test-junit = { module = "androidx.test.ext:junit", version = "1.1.5" }
+test-espresso = { module = "androidx.test.espresso:espresso-core", version.ref = "espressoCore" }
+mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockitoCore" }
+mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockitoKotlin" }
+
+## Non Android
+javax-inject = { module = "javax.inject:javax.inject", version.ref = "javax" }
+kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
+kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesAndroid" }
+
+#Hilt
+hilt-android-gradle-plugin = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "hiltAndroidGradlePlugin" }
+hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
+hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
+hilt-lifecycle-viewmodel = { module = "androidx.hilt:hilt-lifecycle-viewmodel", version.ref = "hiltLifecycle" }
+
+## Dependencies of the included build-logic
+android-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref = "gradle-android" }
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+
+## [bundles] works only with libraries. It won't work for plugins.
+[bundles]
+
+android-core = [
+    "androidx-core",
+    "androidx-appcompat",
+    "android-material",
+    "constraint-layout",
+]
+
+fragment = [
+    "androidx-fragment",
+    "androidx-navigation",
+    "androidx-navigation-runtime",
+    "androidx-navigation-ui"
+]
+
+lifecycle = [
+    "androidx-lifecycle-runtime",
+    "androidx-lifecycle-viewmodel",
+    "androidx-lifecycle-livedata",
+    "androidx-lifecycle-livedata-ktx",
+    "androidx-lifecycle-compiler",
+]
+
+testImplementation = [
+    "junit",
+    "mockito-core",
+    "mockito-kotlin"
+]
+
+androidTestImplementation = [
+    "junit-ext",
+    "test-core",
+    "test-core-ktx",
+    "test-espresso"
+]
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "gradle-android" }
+android-library = { id = "com.android.library", version.ref = "gradle-android" }
+navigation-safe = { id = "androidx.navigation.safeargs", version.ref = "androidxNavigation" }
+navigation-safe-kotlin = { id = "androidx.navigation.safeargs.kotlin", version.ref = "androidxNavigation" }
+hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+hilt-android-plugin = { id = "dagger.hilt.android.plugin", version.ref = "hilt" }
+jvm = { id = "java-library", version.ref = "jvm" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-kapt = { id = "kotlin-kapt", version.ref = "kotlin" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }

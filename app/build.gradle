@@ -1,0 +1,100 @@
+plugins {
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.hilt.android)
+    id 'androidx.navigation.safeargs.kotlin'
+    id 'kotlin-kapt'
+}
+
+android {
+    namespace 'ru.vdh.foodrecipes'
+    compileSdk libs.versions.compileSdk.get().toInteger()
+
+    defaultConfig {
+        applicationId "ru.vdh.foodrecipes"
+        minSdk libs.versions.minSdk.get().toInteger()
+        targetSdk libs.versions.targetSdk.get().toInteger()
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+    buildFeatures {
+        viewBinding true
+    }
+}
+
+// Allow references to generated code
+kapt {
+    correctErrorTypes true
+}
+
+dependencies {
+    implementation project(':core:ui')
+    implementation project(':core:presentation')
+    implementation project(':core:domain')
+    implementation project(':core:data')
+    implementation project(':core:datasource')
+
+    implementation project(':feature:recipes:ui')
+    implementation project(':feature:recipes:presentation')
+    implementation project(':feature:recipes:domain')
+    implementation project(':feature:recipes:data')
+    implementation project(':feature:recipes:datasource')
+
+    implementation project(':feature:favoriterecipes:ui')
+    implementation project(':feature:favoriterecipes:presentation')
+    implementation project(':feature:favoriterecipes:domain')
+    implementation project(':feature:favoriterecipes:data')
+    implementation project(':feature:favoriterecipes:datasource')
+
+    implementation project(':feature:foodjoke:ui')
+    implementation project(':feature:foodjoke:presentation')
+    implementation project(':feature:foodjoke:domain')
+    implementation project(':feature:foodjoke:data')
+    implementation project(':feature:foodjoke:datasource')
+
+    implementation(libs.bundles.android.core)
+    implementation(libs.bundles.fragment)
+    implementation(libs.kotlinx.coroutines.android)
+    implementation libs.bundles.lifecycle
+
+    //Hilt
+    implementation(libs.hilt.android)
+    kapt libs.hilt.compiler
+
+    //Room
+    implementation(libs.room.runtime)
+    kapt(libs.room.compiler)
+    implementation(libs.room.ktx)
+    androidTestImplementation(libs.room.testing)
+
+    implementation libs.androidx.junit.ktx
+
+    // Image Loading library Coil
+    implementation libs.coil
+
+    // Gson
+    implementation libs.gson
+
+    // Shimmer
+    implementation libs.shimmer
+
+    // Jsoup
+    implementation libs.jsoup
+
+}
