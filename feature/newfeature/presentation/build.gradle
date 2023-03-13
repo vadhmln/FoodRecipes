@@ -35,7 +35,7 @@ android {
 dependencies {
     implementation project(':core:presentation')
     implementation project(':core:domain')
-    implementation project(':feature:recipes:domain')
+    implementation project(':feature:newfeature:domain')
 
     implementation(libs.bundles.testImplementation)
     implementation(libs.kotlinx.coroutines.android)

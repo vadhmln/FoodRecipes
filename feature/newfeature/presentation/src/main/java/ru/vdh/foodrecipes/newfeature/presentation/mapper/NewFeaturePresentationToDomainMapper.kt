@@ -1,6 +1,6 @@
 package ru.vdh.foodrecipes.newfeature.presentation.mapper
 
-import ru.vdh.foodrecipes.recipes.domain.model.NewFeatureDomainModel
+import ru.vdh.foodrecipes.newfeature.domain.model.NewFeatureDomainModel
 import ru.vdh.foodrecipes.newfeature.presentation.model.NewFeaturePresentationModel
 
 class NewFeaturePresentationToDomainMapper {

@@ -31,7 +31,7 @@ android {
 }
 
 dependencies {
-    implementation project(path: ':feature:recipes:data')
+    implementation project(path: ':feature:newfeature:data')
 
     implementation libs.androidx.junit.ktx
 }

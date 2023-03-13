@@ -6,8 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import ru.vdh.foodrecipes.core.presentation.viewmodel.BaseViewModel
 import ru.vdh.foodrecipes.core.presentation.viewmodel.usecase.UseCaseExecutorProvider
-import ru.vdh.foodrecipes.recipes.domain.usecase.GetNewFeatureUseCase
-import ru.vdh.foodrecipes.recipes.domain.usecase.SaveNewFeatureUseCase
+import ru.vdh.foodrecipes.newfeature.domain.usecase.GetNewFeatureUseCase
+import ru.vdh.foodrecipes.newfeature.domain.usecase.SaveNewFeatureUseCase
 import ru.vdh.foodrecipes.newfeature.presentation.destination.NewFeaturePresentationDestination.SecondFeature
 import ru.vdh.foodrecipes.newfeature.presentation.mapper.NewFeatureDomainToPresentationMapper
 import ru.vdh.foodrecipes.newfeature.presentation.mapper.NewFeaturePresentationToDomainMapper

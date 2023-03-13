@@ -10,9 +10,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import ru.vdh.foodrecipes.core.ui.mapper.ViewStateBinder
 import ru.vdh.foodrecipes.core.ui.view.BaseFragment
 import ru.vdh.foodrecipes.core.ui.view.ViewsProvider
-import ru.vdh.foodrecipes.recipes.presentation.model.NewFeaturePresentationNotification
-import ru.vdh.foodrecipes.recipes.presentation.model.NewFeatureViewState
-import ru.vdh.foodrecipes.recipes.presentation.viewmodel.RecipesFragmentViewModel
+import ru.vdh.foodrecipes.newfeature.presentation.model.NewFeaturePresentationNotification
+import ru.vdh.foodrecipes.newfeature.presentation.model.NewFeatureViewState
+import ru.vdh.foodrecipes.newfeature.presentation.viewmodel.NewFeatureViewModel
 import ru.vdh.foodrecipes.newfeature.ui.R
 import ru.vdh.foodrecipes.newfeature.ui.mapper.NewFeatureDestinationToUiMapper
 import ru.vdh.foodrecipes.newfeature.ui.mapper.NewUserNotificationPresentationToUiMapper
@@ -24,7 +24,7 @@ private const val NO_LAYOUT_RESOURCE = 0
 class NewFeatureFragment : BaseFragment<NewFeatureViewState, NewFeaturePresentationNotification>(),
     NewFeatureViewsProvider {
 
-    override val viewModel: RecipesFragmentViewModel by viewModels()
+    override val viewModel: NewFeatureViewModel by viewModels()
 
     override val layoutResourceId = R.layout.new_feature_fragment
 

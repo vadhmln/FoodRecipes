@@ -1,6 +1,6 @@
 package ru.vdh.foodrecipes.newfeature.datasource.mapper
 
-import ru.vdh.foodrecipes.recipes.data.model.NewFeatureDataModel
+import ru.vdh.foodrecipes.newfeature.data.model.NewFeatureDataModel
 
 class NewFeatureDataSourceToDataMapper {
 
