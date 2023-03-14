@@ -30,6 +30,7 @@ import ru.vdh.foodrecipes.core.presentation.viewmodel.BaseViewModel
 import ru.vdh.foodrecipes.core.presentation.viewmodel.usecase.UseCaseExecutorProvider
 import ru.vdh.foodrecipes.recipes.domain.usecase.GetRecipesUseCase
 import ru.vdh.foodrecipes.recipes.domain.usecase.SaveNewFeatureUseCase
+import ru.vdh.foodrecipes.recipes.presentation.NetworkResult
 import ru.vdh.foodrecipes.recipes.presentation.NetworkResultUiState
 import ru.vdh.foodrecipes.recipes.presentation.destination.NewFeaturePresentationDestination.SecondFeature
 import ru.vdh.foodrecipes.recipes.presentation.mapper.RecipesDomainToPresentationMapper
@@ -67,7 +68,7 @@ class RecipesFragmentViewModel @Inject constructor(
         if (hasInternetConnection()) {
             getRecipes(queries)
         } else {
-//            NetworkResultUiState.Error("No Internet Connection.")
+//            recipesResponse.value = NetworkResult.Error("No Internet Connection.")
         }
     }
 
@@ -77,7 +78,7 @@ class RecipesFragmentViewModel @Inject constructor(
                 queries,
                 onStart = { },
                 onComplete = { },
-                onError = {}
+                onError = { }
             ).asLiveData()
 
         recipesResponse = list.map(recipesDomainToPresentationMapper::toPresentation)

@@ -1,20 +1,22 @@
 package ru.vdh.foodrecipes.recipes.datasource.mapper
 
+import ru.vdh.foodrecipes.network.model.ExtendedIngredientRemoteDataSourceModel
 import ru.vdh.foodrecipes.network.model.RecipesRemoteDataSourceModel
+import ru.vdh.foodrecipes.network.model.ResultRemoteDataSourceModel
 import ru.vdh.foodrecipes.recipes.data.model.ExtendedIngredientDataModel
 import ru.vdh.foodrecipes.recipes.data.model.RecipesDataModel
 import ru.vdh.foodrecipes.recipes.data.model.ResultDataModel
 
-class RecipesRemoteDataSourceToDataMapper {
+class RecipesDataModelToDatabaseMapper {
 
-    fun toData(input: RecipesRemoteDataSourceModel) =
-        RecipesDataModel(input.results.map { result ->
-            ResultDataModel(
+    fun toDatabase(input: RecipesDataModel ) =
+        RecipesRemoteDataSourceModel(input.results.map { result ->
+            ResultRemoteDataSourceModel(
                 result.aggregateLikes,
                 result.cheap,
                 result.dairyFree,
                 result.extendedIngredients.map {
-                    ExtendedIngredientDataModel(
+                    ExtendedIngredientRemoteDataSourceModel(
                         it.amount,
                         it.consistency,
                         it.image,

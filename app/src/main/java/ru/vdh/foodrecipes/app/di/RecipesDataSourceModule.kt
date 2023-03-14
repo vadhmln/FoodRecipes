@@ -4,11 +4,14 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import ru.vdh.foodrecipes.database.RecipesDao
 import ru.vdh.foodrecipes.network.FoodRecipesApi
 import ru.vdh.foodrecipes.recipes.data.datasource.RecipesRemoteDataSource
 import ru.vdh.foodrecipes.recipes.datasource.RecipesRemoteDataSourceImpl
 import ru.vdh.foodrecipes.recipes.datasource.mapper.JokesRemoteDataSourceToDataMapper
-import ru.vdh.foodrecipes.recipes.datasource.mapper.RecipesDataToDataSourceMapper
+import ru.vdh.foodrecipes.recipes.datasource.mapper.RecipesDataModelToDatabaseMapper
+import ru.vdh.foodrecipes.recipes.datasource.mapper.RecipesDataToDatabaseMapper
+import ru.vdh.foodrecipes.recipes.datasource.mapper.RecipesDatabaseToDataMapper
 import ru.vdh.foodrecipes.recipes.datasource.mapper.RecipesRemoteDataSourceToDataMapper
 import javax.inject.Singleton
 
@@ -20,7 +23,13 @@ class RecipesDataSourceModule {
     fun providesJokesRemoteDataSourceToDataMapper() = JokesRemoteDataSourceToDataMapper()
 
     @Provides
-    fun providesRecipesDataToDataSourceMapper() = RecipesDataToDataSourceMapper()
+    fun providesRecipesDataToDataSourceMapper() = RecipesDataToDatabaseMapper()
+
+    @Provides
+    fun providesRecipesDatabaseToDataMapper() = RecipesDatabaseToDataMapper()
+
+    @Provides
+    fun providesRecipesDataModelToDatabaseMapper() = RecipesDataModelToDatabaseMapper()
 
     @Provides
     fun providesRecipesRemoteDataSourceToDataMapper() = RecipesRemoteDataSourceToDataMapper()
@@ -29,11 +38,17 @@ class RecipesDataSourceModule {
     @Singleton
     fun provideRecipesRemoteDataSource(
         foodRecipesApi: FoodRecipesApi,
+        recipesDao: RecipesDao,
         recipesRemoteDataSourceToDataMapper: RecipesRemoteDataSourceToDataMapper,
-        jokesRemoteDataSourceToDataMapper: JokesRemoteDataSourceToDataMapper
+        recipesDataToDatabaseMapper: RecipesDataToDatabaseMapper,
+        recipesDatabaseToDataMapper: RecipesDatabaseToDataMapper,
+        recipesDataModelToDatabaseMapper: RecipesDataModelToDatabaseMapper,
     ): RecipesRemoteDataSource = RecipesRemoteDataSourceImpl(
         foodRecipesApi,
+        recipesDao,
         recipesRemoteDataSourceToDataMapper,
-        jokesRemoteDataSourceToDataMapper
+        recipesDataToDatabaseMapper,
+        recipesDatabaseToDataMapper,
+        recipesDataModelToDatabaseMapper
     )
 }

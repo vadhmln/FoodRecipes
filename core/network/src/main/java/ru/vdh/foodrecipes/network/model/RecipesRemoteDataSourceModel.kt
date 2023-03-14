@@ -4,5 +4,5 @@ import com.google.gson.annotations.SerializedName
 
 data class RecipesRemoteDataSourceModel(
     @SerializedName("results")
-    val resultRemoteDataSourceModels: List<ResultRemoteDataSourceModel>
+    val results: List<ResultRemoteDataSourceModel>
 )
