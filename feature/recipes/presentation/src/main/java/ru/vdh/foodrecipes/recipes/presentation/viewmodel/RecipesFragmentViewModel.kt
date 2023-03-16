@@ -33,10 +33,12 @@ import ru.vdh.foodrecipes.recipes.domain.usecase.SaveNewFeatureUseCase
 import ru.vdh.foodrecipes.recipes.presentation.NetworkResult
 import ru.vdh.foodrecipes.recipes.presentation.NetworkResultUiState
 import ru.vdh.foodrecipes.recipes.presentation.destination.NewFeaturePresentationDestination.SecondFeature
+import ru.vdh.foodrecipes.recipes.presentation.mapper.ErrorResponseDomainToPresentationMapper
 import ru.vdh.foodrecipes.recipes.presentation.mapper.RecipesDomainToPresentationMapper
 import ru.vdh.foodrecipes.recipes.presentation.mapper.RecipesPresentationToDomainMapper
 import ru.vdh.foodrecipes.recipes.presentation.model.MealAndDietType
 import ru.vdh.foodrecipes.recipes.presentation.model.NewFeaturePresentationNotification
+import ru.vdh.foodrecipes.recipes.presentation.model.RecipeErrorResponsePresentationModel
 import ru.vdh.foodrecipes.recipes.presentation.model.RecipesViewState
 import ru.vdh.foodrecipes.recipes.presentation.model.RecipesPresentationModel
 import java.io.IOException
@@ -49,6 +51,7 @@ class RecipesFragmentViewModel @Inject constructor(
     useCaseExecutorProvider: UseCaseExecutorProvider,
     private val recipesPresentationToDomainMapper: RecipesPresentationToDomainMapper,
     private val recipesDomainToPresentationMapper: RecipesDomainToPresentationMapper,
+    private val errorResponseDomainToPresentationMapper: ErrorResponseDomainToPresentationMapper,
     private val application: Application,
 ) : BaseViewModel<RecipesViewState, NewFeaturePresentationNotification>(
     useCaseExecutorProvider
@@ -64,12 +67,20 @@ class RecipesFragmentViewModel @Inject constructor(
 
     var recipesResponse: LiveData<RecipesPresentationModel> = MutableLiveData()
 
+    lateinit var errorMassage: String
+
     fun getRecipesSafeCall(queries: Map<String, String>) {
-        if (hasInternetConnection()) {
-            getRecipes(queries)
-        } else {
-//            recipesResponse.value = NetworkResult.Error("No Internet Connection.")
+        try {
+            if (hasInternetConnection()) {
+                getRecipes(queries)
+            } else {
+                errorMassage = "No Internet Connection."
+            }
+        } catch (e: Exception) {
+            errorMassage = "Recipes not found."
+            e.printStackTrace()
         }
+
     }
 
     private fun getRecipes(queries: Map<String, String>) = viewModelScope.launch {
@@ -80,7 +91,6 @@ class RecipesFragmentViewModel @Inject constructor(
                 onComplete = { },
                 onError = { }
             ).asLiveData()
-
         recipesResponse = list.map(recipesDomainToPresentationMapper::toPresentation)
 
         updateViewState {
@@ -144,7 +154,7 @@ class RecipesFragmentViewModel @Inject constructor(
         }
     }
 
-    private fun hasInternetConnection(): Boolean {
+    fun hasInternetConnection(): Boolean {
         val connectivityManager = application.getSystemService(
             Context.CONNECTIVITY_SERVICE
         ) as ConnectivityManager

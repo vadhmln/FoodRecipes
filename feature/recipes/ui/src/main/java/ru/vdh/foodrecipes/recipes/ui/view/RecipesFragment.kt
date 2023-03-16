@@ -5,16 +5,24 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
+import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.facebook.shimmer.ShimmerFrameLayout
 import dagger.hilt.android.AndroidEntryPoint
+import okio.ByteString.Companion.decodeBase64
 import ru.vdh.foodrecipes.core.ui.mapper.ViewStateBinder
 import ru.vdh.foodrecipes.core.ui.view.BaseFragment
 import ru.vdh.foodrecipes.core.ui.view.ViewsProvider
+import ru.vdh.foodrecipes.recipes.presentation.NetworkResult
 import ru.vdh.foodrecipes.recipes.presentation.model.NewFeaturePresentationNotification
+import ru.vdh.foodrecipes.recipes.presentation.model.RecipeErrorResponsePresentationModel
+import ru.vdh.foodrecipes.recipes.presentation.model.RecipesPresentationModel
 import ru.vdh.foodrecipes.recipes.presentation.model.RecipesViewState
 import ru.vdh.foodrecipes.recipes.presentation.viewmodel.RecipesFragmentViewModel
 import ru.vdh.foodrecipes.recipes.ui.mapper.RecipesDestinationToUiMapper
@@ -66,6 +74,10 @@ class RecipesFragment :
 
     override lateinit var shimmerFrameLayout: ShimmerFrameLayout
 
+    override lateinit var errorImageView: ImageView
+
+    override lateinit var errorTextView: TextView
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -79,6 +91,8 @@ class RecipesFragment :
 
         recyclerView = binding.recyclerview
         shimmerFrameLayout = binding.shimmerFrameLayout
+        errorImageView = binding.errorImageView
+        errorTextView = binding.errorTextView
 
         viewModel.getRecipesSafeCall(viewModel.applyQueries())
         viewModel.recipesResponse.observe(viewLifecycleOwner) { data ->
@@ -92,8 +106,56 @@ class RecipesFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        handleError(errorImageView)
+        handleError(errorTextView)
     }
+
+    private fun handleError(view: View) {
+        when (view) {
+            is ImageView -> {
+                if (viewModel.hasInternetConnection()) {
+                    view.visibility = View.INVISIBLE
+
+                } else {
+                    hideShimmerEffect()
+                    view.visibility = View.VISIBLE
+                }
+            }
+
+            is TextView -> {
+                if (viewModel.hasInternetConnection()) {
+                    view.visibility = View.INVISIBLE
+
+                } else {
+                    hideShimmerEffect()
+                    view.visibility = View.VISIBLE
+                    view.text = viewModel.errorMassage
+                }
+            }
+        }
+    }
+
+    private fun handleReadDataErrors(
+        view: View,
+        apiResponse: RecipeErrorResponsePresentationModel?,
+
+        ) {
+        when (view) {
+            is ImageView -> {
+                if (apiResponse != null) {
+                    view.isVisible = apiResponse.message?.contains("error") ?: view.isInvisible
+                }
+            }
+
+            is TextView -> {
+                if (apiResponse != null) {
+                    view.isVisible = apiResponse.message?.contains("error") ?: view.isInvisible
+                }
+                view.text = apiResponse?.message.toString()
+            }
+        }
+    }
+
 
 //    private fun requestApiData() {
 //        Log.d("RecipesFragment", "requestApiData called!")
@@ -120,14 +182,6 @@ class RecipesFragment :
 //            }
 //        }
 //    }
-
-    private fun loadDataFromCache() {
-//        viewModel.readRecipes.observe(viewLifecycleOwner) { database ->
-//            if (database.isNotEmpty()) {
-//                adapter.setData(database.first().foodRecipe)
-//            }
-//        }
-    }
 
     private fun showShimmerEffect() {
         binding.shimmerFrameLayout.startShimmer()

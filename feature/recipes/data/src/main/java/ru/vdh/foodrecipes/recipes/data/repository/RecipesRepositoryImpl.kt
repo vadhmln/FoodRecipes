@@ -1,19 +1,19 @@
 package ru.vdh.foodrecipes.recipes.data.repository
 
-import androidx.annotation.WorkerThread
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import ru.vdh.foodrecipes.recipes.data.datasource.RecipesRemoteDataSource
+import ru.vdh.foodrecipes.recipes.data.mapper.ErrorResponseToDomainMapper
 import ru.vdh.foodrecipes.recipes.data.mapper.RecipesDataToDomainMapper
 import ru.vdh.foodrecipes.recipes.domain.model.FoodJokeDomainModel
+import ru.vdh.foodrecipes.recipes.domain.model.RecipeErrorMassageDomainModel
 import ru.vdh.foodrecipes.recipes.domain.model.RecipesDomainModel
 import ru.vdh.foodrecipes.recipes.domain.repository.RecipesRepository
 
 class RecipesRepositoryImpl(
     private val recipesRemoteDataSource: RecipesRemoteDataSource,
-    private val recipesDataToDomainMapper: RecipesDataToDomainMapper
+    private val recipesDataToDomainMapper: RecipesDataToDomainMapper,
+    private val errorResponseToDomainMapper: ErrorResponseToDomainMapper,
 ) : RecipesRepository {
 
     override suspend fun getRecipes(
@@ -21,8 +21,10 @@ class RecipesRepositoryImpl(
         onStart: () -> Unit,
         onComplete: () -> Unit,
         onError: (String?) -> Unit
-    ) = recipesRemoteDataSource.getRecipes(queries, onStart, onComplete, onError)
-        .map(recipesDataToDomainMapper::toDomain)
+    ): Flow<RecipesDomainModel> {
+        return recipesRemoteDataSource.getRecipes(queries, onStart, onComplete, onError)
+            .map(recipesDataToDomainMapper::toDomain)
+    }
 
 
     override suspend fun searchRecipes(searchQuery: Map<String, String>): List<RecipesDomainModel> {

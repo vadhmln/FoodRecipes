@@ -4,6 +4,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import ru.vdh.foodrecipes.core.domain.coroutine.CoroutineContextProvider
 import ru.vdh.foodrecipes.core.domain.usecase.BackgroundExecutingUseCase
+import ru.vdh.foodrecipes.recipes.domain.model.RecipeErrorMassageDomainModel
 import ru.vdh.foodrecipes.recipes.domain.model.RecipesDomainModel
 import ru.vdh.foodrecipes.recipes.domain.repository.RecipesRepository
 

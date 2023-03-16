@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
@@ -49,18 +50,14 @@ class RecipesAdapter @Inject constructor() : RecyclerView.Adapter<RecipesAdapter
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val currentRecipe = recipes[position]
-        holder.recipeImage.load(currentRecipe.image){
+        holder.recipeImage.load(currentRecipe.image) {
             crossfade(600)
             error(R.drawable.ic_error_placeholder)
         }
         holder.title.text = currentRecipe.title
         parseHtml(holder.description, currentRecipe.summary)
-//        holder.description.text = currentRecipe.summary
-//        holder.heartImage.load(ru.vdh.cleanarch.core.ui.R.drawable.ic_heart)
         holder.heartTextView.text = currentRecipe.aggregateLikes.toString()
-//        holder.clockImage.load(ru.vdh.cleanarch.core.ui.R.drawable.ic_clock)
         holder.clockTextView.text = currentRecipe.readyInMinutes.toString()
-//        holder.leafTextView.text = currentRecipe.vegan.toString()
         applyVeganColor(holder.leafImage, currentRecipe.vegan)
         applyVeganColor(holder.leafTextView, currentRecipe.vegan)
     }
@@ -109,8 +106,8 @@ class RecipesAdapter @Inject constructor() : RecyclerView.Adapter<RecipesAdapter
         }
     }
 
-    private fun parseHtml(textView: TextView, description: String?){
-        if(description != null) {
+    private fun parseHtml(textView: TextView, description: String?) {
+        if (description != null) {
             val desc = Jsoup.parse(description).text()
             textView.text = desc
         }

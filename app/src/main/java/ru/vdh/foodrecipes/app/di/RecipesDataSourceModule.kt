@@ -8,6 +8,7 @@ import ru.vdh.foodrecipes.database.RecipesDao
 import ru.vdh.foodrecipes.network.FoodRecipesApi
 import ru.vdh.foodrecipes.recipes.data.datasource.RecipesRemoteDataSource
 import ru.vdh.foodrecipes.recipes.datasource.RecipesRemoteDataSourceImpl
+import ru.vdh.foodrecipes.recipes.datasource.mapper.ErrorResponseToDataMapper
 import ru.vdh.foodrecipes.recipes.datasource.mapper.JokesRemoteDataSourceToDataMapper
 import ru.vdh.foodrecipes.recipes.datasource.mapper.RecipesDataModelToDatabaseMapper
 import ru.vdh.foodrecipes.recipes.datasource.mapper.RecipesDataToDatabaseMapper
@@ -29,6 +30,9 @@ class RecipesDataSourceModule {
     fun providesRecipesDatabaseToDataMapper() = RecipesDatabaseToDataMapper()
 
     @Provides
+    fun providesErrorResponseToDataMapper() = ErrorResponseToDataMapper()
+
+    @Provides
     fun providesRecipesDataModelToDatabaseMapper() = RecipesDataModelToDatabaseMapper()
 
     @Provides
@@ -40,15 +44,15 @@ class RecipesDataSourceModule {
         foodRecipesApi: FoodRecipesApi,
         recipesDao: RecipesDao,
         recipesRemoteDataSourceToDataMapper: RecipesRemoteDataSourceToDataMapper,
-        recipesDataToDatabaseMapper: RecipesDataToDatabaseMapper,
         recipesDatabaseToDataMapper: RecipesDatabaseToDataMapper,
         recipesDataModelToDatabaseMapper: RecipesDataModelToDatabaseMapper,
+        errorResponseToDataMapper: ErrorResponseToDataMapper,
     ): RecipesRemoteDataSource = RecipesRemoteDataSourceImpl(
         foodRecipesApi,
         recipesDao,
         recipesRemoteDataSourceToDataMapper,
-        recipesDataToDatabaseMapper,
         recipesDatabaseToDataMapper,
-        recipesDataModelToDatabaseMapper
+        recipesDataModelToDatabaseMapper,
+        errorResponseToDataMapper,
     )
 }

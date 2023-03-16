@@ -3,6 +3,7 @@ package ru.vdh.foodrecipes.recipes.domain.repository
 import ru.vdh.foodrecipes.recipes.domain.model.FoodJokeDomainModel
 import ru.vdh.foodrecipes.recipes.domain.model.RecipesDomainModel
 import kotlinx.coroutines.flow.Flow
+import ru.vdh.foodrecipes.recipes.domain.model.RecipeErrorMassageDomainModel
 
 interface RecipesRepository {
 

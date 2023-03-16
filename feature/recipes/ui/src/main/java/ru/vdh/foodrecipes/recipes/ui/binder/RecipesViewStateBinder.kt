@@ -2,8 +2,14 @@ package ru.vdh.foodrecipes.recipes.ui.binder
 
 import android.util.Log
 import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.core.view.isVisible
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import ru.vdh.foodrecipes.core.ui.mapper.ViewStateBinder
+import ru.vdh.foodrecipes.recipes.presentation.NetworkResult
+import ru.vdh.foodrecipes.recipes.presentation.model.RecipeErrorResponsePresentationModel
 import ru.vdh.foodrecipes.recipes.presentation.model.RecipesPresentationModel
 import ru.vdh.foodrecipes.recipes.presentation.model.RecipesViewState
 import ru.vdh.foodrecipes.recipes.ui.adapter.RecipesAdapter
@@ -27,10 +33,6 @@ class RecipesViewStateBinder @Inject constructor(
         if (recyclerView.adapter == null) {
             recyclerView.adapter = fragment.adapter
             recyclerView.layoutManager = LinearLayoutManager(fragment.requireContext())
-
-//            shimmerFrameLayout.startShimmer()
-//            shimmerFrameLayout.visibility = View.VISIBLE
-//            shimmerFrameLayout.visibility = View.GONE
         }
 
     }

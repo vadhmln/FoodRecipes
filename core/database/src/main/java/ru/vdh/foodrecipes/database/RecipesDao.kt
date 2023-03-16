@@ -19,7 +19,7 @@ interface RecipesDao {
     suspend fun insertFoodJoke(foodJokeEntity: FoodJokeEntity)
 
     @Query("SELECT * FROM recipes_table ORDER BY id ASC")
-    fun readRecipes(): Flow<List<RecipesEntity>>
+    fun readRecipes(): List<RecipesEntity>
 
     @Query("SELECT * FROM favorite_recipes_table ORDER BY id ASC")
     fun readFavoriteRecipes(): Flow<List<FavoritesEntity>>
