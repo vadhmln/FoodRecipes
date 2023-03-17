@@ -1,12 +1,16 @@
 package ru.vdh.foodrecipes.app.di
 
+import android.content.Context
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import ru.vdh.foodrecipes.database.RecipesDao
 import ru.vdh.foodrecipes.network.FoodRecipesApi
+import ru.vdh.foodrecipes.recipes.data.datasource.DataStoreDataSource
 import ru.vdh.foodrecipes.recipes.data.datasource.RecipesRemoteDataSource
+import ru.vdh.foodrecipes.recipes.datasource.DataStoreDataSourceImpl
 import ru.vdh.foodrecipes.recipes.datasource.RecipesRemoteDataSourceImpl
 import ru.vdh.foodrecipes.recipes.datasource.mapper.ErrorResponseToDataMapper
 import ru.vdh.foodrecipes.recipes.datasource.mapper.JokesRemoteDataSourceToDataMapper
@@ -55,4 +59,10 @@ class RecipesDataSourceModule {
         recipesDataModelToDatabaseMapper,
         errorResponseToDataMapper,
     )
+
+    @Provides
+    @Singleton
+    fun provideDataStoreDataSource(@ApplicationContext context: Context): DataStoreDataSource =
+        DataStoreDataSourceImpl(context = context)
+
 }

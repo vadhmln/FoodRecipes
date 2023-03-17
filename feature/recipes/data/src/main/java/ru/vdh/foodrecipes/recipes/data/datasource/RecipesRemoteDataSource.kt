@@ -3,7 +3,6 @@ package ru.vdh.foodrecipes.recipes.data.datasource
 import kotlinx.coroutines.flow.Flow
 import retrofit2.Response
 import ru.vdh.foodrecipes.recipes.data.model.FoodJokeDataModel
-import ru.vdh.foodrecipes.recipes.data.model.RecipeErrorMassageDataModel
 import ru.vdh.foodrecipes.recipes.data.model.RecipesDataModel
 
 interface RecipesRemoteDataSource {

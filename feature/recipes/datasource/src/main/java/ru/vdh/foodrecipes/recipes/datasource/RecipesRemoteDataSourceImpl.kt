@@ -17,15 +17,12 @@ import ru.vdh.foodrecipes.database.entities.RecipesEntity
 import ru.vdh.foodrecipes.network.FoodRecipesApi
 import ru.vdh.foodrecipes.recipes.data.datasource.RecipesRemoteDataSource
 import ru.vdh.foodrecipes.recipes.data.model.FoodJokeDataModel
-import ru.vdh.foodrecipes.recipes.data.model.RecipeErrorMassageDataModel
 import ru.vdh.foodrecipes.recipes.data.model.RecipesDataModel
 import ru.vdh.foodrecipes.recipes.datasource.mapper.ErrorResponseMapper
 import ru.vdh.foodrecipes.recipes.datasource.mapper.ErrorResponseToDataMapper
 import ru.vdh.foodrecipes.recipes.datasource.mapper.RecipesDataModelToDatabaseMapper
-import ru.vdh.foodrecipes.recipes.datasource.mapper.RecipesDataToDatabaseMapper
 import ru.vdh.foodrecipes.recipes.datasource.mapper.RecipesDatabaseToDataMapper
 import ru.vdh.foodrecipes.recipes.datasource.mapper.RecipesRemoteDataSourceToDataMapper
-import ru.vdh.foodrecipes.recipes.datasource.model.RecipeErrorResponseDataSourceModel
 import timber.log.Timber
 
 class RecipesRemoteDataSourceImpl(

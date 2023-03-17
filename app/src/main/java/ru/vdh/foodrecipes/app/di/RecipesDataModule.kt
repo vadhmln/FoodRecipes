@@ -4,11 +4,16 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import ru.vdh.foodrecipes.recipes.data.datasource.DataStoreDataSource
 import ru.vdh.foodrecipes.recipes.data.datasource.RecipesRemoteDataSource
+import ru.vdh.foodrecipes.recipes.data.mapper.DataStoreDataToDomainMapper
 import ru.vdh.foodrecipes.recipes.data.mapper.ErrorResponseToDomainMapper
 import ru.vdh.foodrecipes.recipes.data.mapper.RecipesDataToDomainMapper
-import ru.vdh.foodrecipes.recipes.data.repository.RecipesRepositoryImpl
-import ru.vdh.foodrecipes.recipes.domain.repository.RecipesRepository
+import ru.vdh.foodrecipes.recipes.data.repository.DataStoreRepositoryImpl
+import ru.vdh.foodrecipes.recipes.data.repository.RecipesRemoteRepositoryImpl
+import ru.vdh.foodrecipes.recipes.domain.repository.DataStoreRepository
+import ru.vdh.foodrecipes.recipes.domain.repository.RecipesRemoteRepository
+import ru.vdh.foodrecipes.recipes.presentation.mapper.DataStoreDomainToPresentationMapper
 import ru.vdh.foodrecipes.recipes.presentation.mapper.ErrorResponseDomainToPresentationMapper
 import ru.vdh.foodrecipes.recipes.presentation.mapper.RecipesDomainToPresentationMapper
 import ru.vdh.foodrecipes.recipes.presentation.mapper.RecipesPresentationToDomainMapper
@@ -31,17 +36,33 @@ class RecipesDataModule {
     fun providesErrorResponseDomainToPresentationMapper() = ErrorResponseDomainToPresentationMapper()
 
     @Provides
+    fun providesDataStoreDomainToPresentationMapper() = DataStoreDomainToPresentationMapper()
+
+    @Provides
     fun providesErrorResponseToDomainMapper() = ErrorResponseToDomainMapper()
 
     @Provides
+    fun providesDataStoreDataToDomainMapper() = DataStoreDataToDomainMapper()
+
+    @Provides
     @Singleton
-    fun provideNewFeatureRepository(
+    fun provideRecipesRemoteRepository(
         recipesRemoteDataSource: RecipesRemoteDataSource,
         recipesDataToDomainMapper: RecipesDataToDomainMapper,
         errorResponseToDomainMapper: ErrorResponseToDomainMapper,
-    ): RecipesRepository = RecipesRepositoryImpl(
+    ): RecipesRemoteRepository = RecipesRemoteRepositoryImpl(
         recipesRemoteDataSource = recipesRemoteDataSource,
         recipesDataToDomainMapper,
         errorResponseToDomainMapper
+    )
+
+    @Provides
+    @Singleton
+    fun provideDataStoreRepository(
+        dataStoreDataSource: DataStoreDataSource,
+        dataStoreDataToDomainMapper: DataStoreDataToDomainMapper,
+    ): DataStoreRepository = DataStoreRepositoryImpl(
+        dataStoreDataSource,
+        dataStoreDataToDomainMapper,
     )
 }

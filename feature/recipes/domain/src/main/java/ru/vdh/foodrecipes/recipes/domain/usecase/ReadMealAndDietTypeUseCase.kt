@@ -6,7 +6,7 @@ import ru.vdh.foodrecipes.core.domain.usecase.BackgroundExecutingUseCase
 import ru.vdh.foodrecipes.recipes.domain.model.RecipesDomainModel
 import ru.vdh.foodrecipes.recipes.domain.repository.RecipesRemoteRepository
 
-class GetRecipesUseCase(
+class ReadMealAndDietTypeUseCase (
     private val recipesRemoteRepository: RecipesRemoteRepository,
     private val coroutineContextProvider: CoroutineContextProvider
 ) : BackgroundExecutingUseCase<RecipesDomainModel, Flow<RecipesDomainModel>>(coroutineContextProvider) {

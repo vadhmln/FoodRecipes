@@ -5,8 +5,10 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
 import ru.vdh.foodrecipes.core.domain.coroutine.CoroutineContextProvider
-import ru.vdh.foodrecipes.recipes.domain.repository.RecipesRepository
+import ru.vdh.foodrecipes.recipes.domain.repository.DataStoreRepository
+import ru.vdh.foodrecipes.recipes.domain.repository.RecipesRemoteRepository
 import ru.vdh.foodrecipes.recipes.domain.usecase.GetRecipesUseCase
+import ru.vdh.foodrecipes.recipes.domain.usecase.SaveMealAndDietTypeUseCase
 import ru.vdh.foodrecipes.recipes.domain.usecase.SaveNewFeatureUseCase
 
 @Module
@@ -14,23 +16,22 @@ import ru.vdh.foodrecipes.recipes.domain.usecase.SaveNewFeatureUseCase
 class RecipesDomainModule {
 
     @Provides
-    fun provideGetNewFeatureUseCase(
-        recipesRepository: RecipesRepository,
+    fun provideGetRecipesUseCase(
+        recipesRemoteRepository: RecipesRemoteRepository,
         coroutineContextProvider: CoroutineContextProvider
     ): GetRecipesUseCase =
         GetRecipesUseCase(
-            recipesRepository = recipesRepository,
+            recipesRemoteRepository = recipesRemoteRepository,
             coroutineContextProvider = coroutineContextProvider
         )
 
-
     @Provides
     fun provideSaveNewFeatureUseCase(
-        recipesRepository: RecipesRepository,
+        dataStoreRepository: DataStoreRepository,
         coroutineContextProvider: CoroutineContextProvider
-    ): SaveNewFeatureUseCase =
-        SaveNewFeatureUseCase(
-            recipesRepository = recipesRepository,
+    ): SaveMealAndDietTypeUseCase =
+        SaveMealAndDietTypeUseCase(
+            dataStoreRepository,
             coroutineContextProvider = coroutineContextProvider
         )
 

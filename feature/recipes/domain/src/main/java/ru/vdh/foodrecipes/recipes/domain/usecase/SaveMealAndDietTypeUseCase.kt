@@ -4,10 +4,10 @@ import kotlinx.coroutines.flow.Flow
 import ru.vdh.foodrecipes.core.domain.coroutine.CoroutineContextProvider
 import ru.vdh.foodrecipes.core.domain.usecase.BackgroundExecutingUseCase
 import ru.vdh.foodrecipes.recipes.domain.model.RecipesDomainModel
-import ru.vdh.foodrecipes.recipes.domain.repository.RecipesRemoteRepository
+import ru.vdh.foodrecipes.recipes.domain.repository.DataStoreRepository
 
-class GetRecipesUseCase(
-    private val recipesRemoteRepository: RecipesRemoteRepository,
+class SaveMealAndDietTypeUseCase(
+    private val dataStoreRepository: DataStoreRepository,
     private val coroutineContextProvider: CoroutineContextProvider
 ) : BackgroundExecutingUseCase<RecipesDomainModel, Flow<RecipesDomainModel>>(coroutineContextProvider) {
 
@@ -15,11 +15,15 @@ class GetRecipesUseCase(
         TODO("Not yet implemented")
     }
 
-    suspend fun getRecipes(
-        queries: Map<String, String>,
-        onStart: () -> Unit,
-        onComplete: () -> Unit,
-        onError: (String?) -> Unit
-    ) =
-        recipesRemoteRepository.getRecipes(queries, onStart, onComplete, onError)
+    suspend fun saveMealAndDietType(
+        mealType: String,
+        mealTypeId: Int,
+        dietType: String,
+        dietTypeId: Int
+    ) = dataStoreRepository.saveMealAndDietType(mealType, mealTypeId, dietType, dietTypeId)
+
+    val readMealAndDietType = dataStoreRepository.readMealAndDietType
+
+    val readBackOnline = dataStoreRepository.readBackOnline
+
 }

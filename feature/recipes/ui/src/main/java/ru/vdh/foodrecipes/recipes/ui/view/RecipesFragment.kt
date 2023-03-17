@@ -7,22 +7,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.facebook.shimmer.ShimmerFrameLayout
 import dagger.hilt.android.AndroidEntryPoint
-import okio.ByteString.Companion.decodeBase64
 import ru.vdh.foodrecipes.core.ui.mapper.ViewStateBinder
 import ru.vdh.foodrecipes.core.ui.view.BaseFragment
 import ru.vdh.foodrecipes.core.ui.view.ViewsProvider
-import ru.vdh.foodrecipes.recipes.presentation.NetworkResult
 import ru.vdh.foodrecipes.recipes.presentation.model.NewFeaturePresentationNotification
 import ru.vdh.foodrecipes.recipes.presentation.model.RecipeErrorResponsePresentationModel
-import ru.vdh.foodrecipes.recipes.presentation.model.RecipesPresentationModel
 import ru.vdh.foodrecipes.recipes.presentation.model.RecipesViewState
 import ru.vdh.foodrecipes.recipes.presentation.viewmodel.RecipesFragmentViewModel
 import ru.vdh.foodrecipes.recipes.ui.mapper.RecipesDestinationToUiMapper
@@ -94,11 +90,16 @@ class RecipesFragment :
         errorImageView = binding.errorImageView
         errorTextView = binding.errorTextView
 
-        viewModel.getRecipesSafeCall(viewModel.applyQueries())
+        requestApiData()
         viewModel.recipesResponse.observe(viewLifecycleOwner) { data ->
             adapter.setData(data)
             hideShimmerEffect()
             Log.d("AAA", "$data")
+        }
+
+        binding.recipesFab.setOnClickListener {
+
+            findNavController().navigate(RecipesFragmentDirections.actionRecipesFragmentToRecipesBottomSheet())
         }
 
         return binding.root
@@ -106,11 +107,16 @@ class RecipesFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        handleError(errorImageView)
-        handleError(errorTextView)
+        handleInternetConnectionError(errorImageView)
+        handleInternetConnectionError(errorTextView)
     }
 
-    private fun handleError(view: View) {
+    private fun requestApiData() {
+        viewModel.getRecipesSafeCall(viewModel.applyQueries())
+
+    }
+
+    private fun handleInternetConnectionError(view: View) {
         when (view) {
             is ImageView -> {
                 if (viewModel.hasInternetConnection()) {
@@ -155,33 +161,6 @@ class RecipesFragment :
             }
         }
     }
-
-
-//    private fun requestApiData() {
-//        Log.d("RecipesFragment", "requestApiData called!")
-//        viewModel.getRecipes(viewModel.applyQueries())
-//        viewModel.recipesResponse.observe(viewLifecycleOwner) { response ->
-//            when (response) {
-//                is RecipesViewState.Success -> {
-//                    hideShimmerEffect()
-//                    response.data?.let { adapter.setData(it) }
-//                    viewModel.saveMealAndDietType()
-//                }
-//                is RecipesViewState.Error -> {
-//                    hideShimmerEffect()
-//                    loadDataFromCache()
-//                    Toast.makeText(
-//                        requireContext(),
-//                        response.message.toString(),
-//                        Toast.LENGTH_SHORT
-//                    ).show()
-//                }
-//                is RecipesViewState.Loading -> {
-//                    showShimmerEffect()
-//                }
-//            }
-//        }
-//    }
 
     private fun showShimmerEffect() {
         binding.shimmerFrameLayout.startShimmer()

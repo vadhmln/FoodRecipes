@@ -9,5 +9,20 @@
         android:id="@+id/recipesFragment"
         android:name="ru.vdh.foodrecipes.recipes.ui.view.RecipesFragment"
         android:label="Recipes"
-        tools:layout="@layout/recipes_fragment"/>
+        tools:layout="@layout/recipes_fragment">
+        <action
+            android:id="@+id/action_recipesFragment_to_recipesBottomSheet"
+            app:destination="@id/recipesBottomSheet" />
+    </fragment>
+    <dialog
+        android:id="@+id/recipesBottomSheet"
+        android:name="ru.vdh.foodrecipes.recipes.ui.view.RecipesBottomSheet"
+        android:label="recipes_bottom_sheet"
+        tools:layout="@layout/recipes_bottom_sheet" >
+        <action
+            android:id="@+id/action_recipesBottomSheet_to_recipesFragment"
+            app:destination="@id/recipesFragment"
+            app:popUpTo="@id/recipesFragment"
+            app:popUpToInclusive="true" />
+    </dialog>
 </navigation>

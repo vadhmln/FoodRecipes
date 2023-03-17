@@ -6,15 +6,14 @@ import ru.vdh.foodrecipes.recipes.data.datasource.RecipesRemoteDataSource
 import ru.vdh.foodrecipes.recipes.data.mapper.ErrorResponseToDomainMapper
 import ru.vdh.foodrecipes.recipes.data.mapper.RecipesDataToDomainMapper
 import ru.vdh.foodrecipes.recipes.domain.model.FoodJokeDomainModel
-import ru.vdh.foodrecipes.recipes.domain.model.RecipeErrorMassageDomainModel
 import ru.vdh.foodrecipes.recipes.domain.model.RecipesDomainModel
-import ru.vdh.foodrecipes.recipes.domain.repository.RecipesRepository
+import ru.vdh.foodrecipes.recipes.domain.repository.RecipesRemoteRepository
 
-class RecipesRepositoryImpl(
+class RecipesRemoteRepositoryImpl(
     private val recipesRemoteDataSource: RecipesRemoteDataSource,
     private val recipesDataToDomainMapper: RecipesDataToDomainMapper,
     private val errorResponseToDomainMapper: ErrorResponseToDomainMapper,
-) : RecipesRepository {
+) : RecipesRemoteRepository {
 
     override suspend fun getRecipes(
         queries: Map<String, String>,
@@ -25,7 +24,6 @@ class RecipesRepositoryImpl(
         return recipesRemoteDataSource.getRecipes(queries, onStart, onComplete, onError)
             .map(recipesDataToDomainMapper::toDomain)
     }
-
 
     override suspend fun searchRecipes(searchQuery: Map<String, String>): List<RecipesDomainModel> {
         TODO("Not yet implemented")

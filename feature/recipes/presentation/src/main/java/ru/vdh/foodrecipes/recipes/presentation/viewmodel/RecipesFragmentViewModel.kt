@@ -5,6 +5,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
@@ -12,9 +13,9 @@ import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import retrofit2.HttpException
 import retrofit2.Response
 import ru.vdh.foodrecipes.common.utils.Constants.Companion.API_KEY
 import ru.vdh.foodrecipes.common.utils.Constants.Companion.DEFAULT_DIET_TYPE
@@ -29,29 +30,26 @@ import ru.vdh.foodrecipes.common.utils.Constants.Companion.QUERY_TYPE
 import ru.vdh.foodrecipes.core.presentation.viewmodel.BaseViewModel
 import ru.vdh.foodrecipes.core.presentation.viewmodel.usecase.UseCaseExecutorProvider
 import ru.vdh.foodrecipes.recipes.domain.usecase.GetRecipesUseCase
-import ru.vdh.foodrecipes.recipes.domain.usecase.SaveNewFeatureUseCase
-import ru.vdh.foodrecipes.recipes.presentation.NetworkResult
+import ru.vdh.foodrecipes.recipes.domain.usecase.SaveMealAndDietTypeUseCase
 import ru.vdh.foodrecipes.recipes.presentation.NetworkResultUiState
 import ru.vdh.foodrecipes.recipes.presentation.destination.NewFeaturePresentationDestination.SecondFeature
+import ru.vdh.foodrecipes.recipes.presentation.mapper.DataStoreDomainToPresentationMapper
 import ru.vdh.foodrecipes.recipes.presentation.mapper.ErrorResponseDomainToPresentationMapper
 import ru.vdh.foodrecipes.recipes.presentation.mapper.RecipesDomainToPresentationMapper
 import ru.vdh.foodrecipes.recipes.presentation.mapper.RecipesPresentationToDomainMapper
-import ru.vdh.foodrecipes.recipes.presentation.model.MealAndDietType
+import ru.vdh.foodrecipes.recipes.presentation.model.MealAndDietTypePresentationModel
 import ru.vdh.foodrecipes.recipes.presentation.model.NewFeaturePresentationNotification
-import ru.vdh.foodrecipes.recipes.presentation.model.RecipeErrorResponsePresentationModel
 import ru.vdh.foodrecipes.recipes.presentation.model.RecipesViewState
 import ru.vdh.foodrecipes.recipes.presentation.model.RecipesPresentationModel
-import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
 class RecipesFragmentViewModel @Inject constructor(
     private val getRecipesUseCase: GetRecipesUseCase,
-    private val saveNewFeatureUseCase: SaveNewFeatureUseCase,
+    private val saveMealAndDietTypeUseCase: SaveMealAndDietTypeUseCase,
     useCaseExecutorProvider: UseCaseExecutorProvider,
-    private val recipesPresentationToDomainMapper: RecipesPresentationToDomainMapper,
+    private val dataStoreDomainToPresentationMapper: DataStoreDomainToPresentationMapper,
     private val recipesDomainToPresentationMapper: RecipesDomainToPresentationMapper,
-    private val errorResponseDomainToPresentationMapper: ErrorResponseDomainToPresentationMapper,
     private val application: Application,
 ) : BaseViewModel<RecipesViewState, NewFeaturePresentationNotification>(
     useCaseExecutorProvider
@@ -61,13 +59,22 @@ class RecipesFragmentViewModel @Inject constructor(
         Log.e("AAA", "RecipesFragmentViewModel created!!!")
     }
 
-    private lateinit var mealAndDiet: MealAndDietType
+//    private lateinit var mealAndDiet: MealAndDietTypePresentationModel
+
+    private var mealType = DEFAULT_MEAL_TYPE
+    private var dietType = DEFAULT_DIET_TYPE
 
     override fun initialState() = RecipesViewState()
 
     var recipesResponse: LiveData<RecipesPresentationModel> = MutableLiveData()
 
     lateinit var errorMassage: String
+    var networkStatus = false
+    var backOnline = false
+
+    val readMealAndDietType =
+        saveMealAndDietTypeUseCase.readMealAndDietType.map(dataStoreDomainToPresentationMapper::toPresentation)
+    val readBackOnline = saveMealAndDietTypeUseCase.readBackOnline.asLiveData()
 
     fun getRecipesSafeCall(queries: Map<String, String>) {
         try {
@@ -98,33 +105,72 @@ class RecipesFragmentViewModel @Inject constructor(
         }
     }
 
-    fun saveMealAndDietType() =
+    fun saveMealAndDietType(mealType: String, mealTypeId: Int, dietType: String, dietTypeId: Int) =
         viewModelScope.launch(Dispatchers.IO) {
-            if (this@RecipesFragmentViewModel::mealAndDiet.isInitialized) {
-//                dataStoreRepository.saveMealAndDietType(
+            saveMealAndDietTypeUseCase.saveMealAndDietType(mealType, mealTypeId, dietType, dietTypeId)
+        }
+
+//    fun saveMealAndDietType() =
+//        viewModelScope.launch(Dispatchers.IO) {
+//            if (this@RecipesFragmentViewModel::mealAndDiet.isInitialized) {
+//                saveMealAndDietTypeUseCase.saveMealAndDietType(
 //                    mealAndDiet.selectedMealType,
 //                    mealAndDiet.selectedMealTypeId,
 //                    mealAndDiet.selectedDietType,
 //                    mealAndDiet.selectedDietTypeId
 //                )
-            }
-        }
+//            }
+//        }
+
+//    fun saveMealAndDietTypeTemp(
+//        mealType: String,
+//        mealTypeId: Int,
+//        dietType: String,
+//        dietTypeId: Int
+//    ) {
+//        mealAndDiet = MealAndDietTypePresentationModel(
+//            mealType,
+//            mealTypeId,
+//            dietType,
+//            dietTypeId
+//        )
+//    }
+
+//    fun applyQueries(): HashMap<String, String> {
+//        val queries: HashMap<String, String> = HashMap()
+//
+//        queries[QUERY_NUMBER] = DEFAULT_RECIPES_NUMBER
+//        queries[QUERY_API_KEY] = API_KEY
+//        queries[QUERY_ADD_RECIPE_INFORMATION] = "true"
+//        queries[QUERY_FILL_INGREDIENTS] = "true"
+//
+//        if (this@RecipesFragmentViewModel::mealAndDiet.isInitialized) {
+//            queries[QUERY_TYPE] = mealAndDiet.selectedMealType
+//            queries[QUERY_DIET] = mealAndDiet.selectedDietType
+//        } else {
+//            queries[QUERY_TYPE] = DEFAULT_MEAL_TYPE
+//            queries[QUERY_DIET] = DEFAULT_DIET_TYPE
+//        }
+//
+//        return queries
+//    }
 
     fun applyQueries(): HashMap<String, String> {
         val queries: HashMap<String, String> = HashMap()
 
+        viewModelScope.launch {
+            readMealAndDietType.collect { value ->
+                mealType = value.selectedMealType
+                dietType = value.selectedDietType
+            }
+        }
+
         queries[QUERY_NUMBER] = DEFAULT_RECIPES_NUMBER
         queries[QUERY_API_KEY] = API_KEY
+        queries[QUERY_TYPE] = mealType
+        queries[QUERY_DIET] = dietType
         queries[QUERY_ADD_RECIPE_INFORMATION] = "true"
         queries[QUERY_FILL_INGREDIENTS] = "true"
-
-        if (this@RecipesFragmentViewModel::mealAndDiet.isInitialized) {
-            queries[QUERY_TYPE] = mealAndDiet.selectedMealType
-            queries[QUERY_DIET] = mealAndDiet.selectedDietType
-        } else {
-            queries[QUERY_TYPE] = DEFAULT_MEAL_TYPE
-            queries[QUERY_DIET] = DEFAULT_DIET_TYPE
-        }
 
         return queries
     }
@@ -154,6 +200,11 @@ class RecipesFragmentViewModel @Inject constructor(
         }
     }
 
+//    private fun saveBackOnline(backOnline: Boolean) =
+//        viewModelScope.launch(Dispatchers.IO) {
+//            dataStoreRepository.saveBackOnline(backOnline)
+//        }
+
     fun hasInternetConnection(): Boolean {
         val connectivityManager = application.getSystemService(
             Context.CONNECTIVITY_SERVICE
@@ -165,6 +216,18 @@ class RecipesFragmentViewModel @Inject constructor(
             capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
             capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
             else -> false
+        }
+    }
+
+    fun showNetworkStatus() {
+        if (!networkStatus) {
+            Toast.makeText(application, "No Internet Connection.", Toast.LENGTH_SHORT).show()
+//            saveBackOnline(true)
+        } else if (networkStatus) {
+            if (backOnline) {
+                Toast.makeText(application, "We're back online.", Toast.LENGTH_SHORT).show()
+//                saveBackOnline(false)
+            }
         }
     }
 
