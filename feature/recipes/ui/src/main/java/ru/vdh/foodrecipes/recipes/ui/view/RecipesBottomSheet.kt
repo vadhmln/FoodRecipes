@@ -82,10 +82,6 @@ class RecipesBottomSheet : BottomSheetDialogFragment() {
         return binding.root
     }
 
-    private fun requestApiData() {
-        viewModel.getRecipesSafeCall(viewModel.applyQueries())
-    }
-
     private fun updateChip(chipId: Int, chipGroup: ChipGroup) {
         if (chipId != 0) {
             try {
@@ -97,16 +93,6 @@ class RecipesBottomSheet : BottomSheetDialogFragment() {
             }
         }
     }
-
-//    private fun updateChip(chipId: Int, chipGroup: ChipGroup) {
-//        if (chipId != 0) {
-//            try {
-//                chipGroup.findViewById<Chip>(chipId).isChecked = true
-//            } catch (e: Exception) {
-//                Log.d("RecipesBottomSheet", e.message.toString())
-//            }
-//        }
-//    }
 
     override fun onDestroyView() {
         super.onDestroyView()

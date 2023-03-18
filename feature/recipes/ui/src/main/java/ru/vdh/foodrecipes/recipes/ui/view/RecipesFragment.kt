@@ -122,7 +122,6 @@ class RecipesFragment :
                     Log.d("RecipesFragment", "readDatabase called!")
                     adapter.setData(data)
                     hideShimmerEffect()
-                    Log.d("args.backFromBottomSheet", "${args.backFromBottomSheet}")
                 }
             }
         }

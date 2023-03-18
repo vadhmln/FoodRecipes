@@ -44,10 +44,6 @@ class RecipesRemoteDataSourceImpl(
         onError: (String?) -> Unit
     ) = flow {
 
-        val recipes = recipesDao.readRecipes()
-
-        if (recipes.isEmpty()) {
-
             val response = foodRecipesApi.getRecipes(queries)
 
             Log.d("RecipesRemoteDataSourceImpl", "foodRecipesApi called!")
@@ -78,10 +74,6 @@ class RecipesRemoteDataSourceImpl(
                 onError(message())
                 Timber.d(message())
             }.suspendOnException { error(message()) }
-        } else {
-            emit(recipesDatabaseToDataMapper.toData(recipesDao.readRecipes()))
-            Log.d("RecipesRemoteDataSourceImpl", "recipesDao called!")
-        }
     }.flowOn(Dispatchers.IO)
 
     override suspend fun searchRecipes(searchQuery: Map<String, String>): Response<RecipesDataModel> {

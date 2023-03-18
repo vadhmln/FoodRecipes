@@ -117,51 +117,6 @@ class RecipesFragmentViewModel @Inject constructor(
             saveMealAndDietTypeUseCase.saveMealAndDietType(mealType, mealTypeId, dietType, dietTypeId)
         }
 
-//    fun saveMealAndDietType() =
-//        viewModelScope.launch(Dispatchers.IO) {
-//            if (this@RecipesFragmentViewModel::mealAndDiet.isInitialized) {
-//                saveMealAndDietTypeUseCase.saveMealAndDietType(
-//                    mealAndDiet.selectedMealType,
-//                    mealAndDiet.selectedMealTypeId,
-//                    mealAndDiet.selectedDietType,
-//                    mealAndDiet.selectedDietTypeId
-//                )
-//            }
-//        }
-
-//    fun saveMealAndDietTypeTemp(
-//        mealType: String,
-//        mealTypeId: Int,
-//        dietType: String,
-//        dietTypeId: Int
-//    ) {
-//        mealAndDiet = MealAndDietTypePresentationModel(
-//            mealType,
-//            mealTypeId,
-//            dietType,
-//            dietTypeId
-//        )
-//    }
-
-//    fun applyQueries(): HashMap<String, String> {
-//        val queries: HashMap<String, String> = HashMap()
-//
-//        queries[QUERY_NUMBER] = DEFAULT_RECIPES_NUMBER
-//        queries[QUERY_API_KEY] = API_KEY
-//        queries[QUERY_ADD_RECIPE_INFORMATION] = "true"
-//        queries[QUERY_FILL_INGREDIENTS] = "true"
-//
-//        if (this@RecipesFragmentViewModel::mealAndDiet.isInitialized) {
-//            queries[QUERY_TYPE] = mealAndDiet.selectedMealType
-//            queries[QUERY_DIET] = mealAndDiet.selectedDietType
-//        } else {
-//            queries[QUERY_TYPE] = DEFAULT_MEAL_TYPE
-//            queries[QUERY_DIET] = DEFAULT_DIET_TYPE
-//        }
-//
-//        return queries
-//    }
-
     fun applyQueries(): HashMap<String, String> {
         val queries: HashMap<String, String> = HashMap()
 
@@ -180,31 +135,6 @@ class RecipesFragmentViewModel @Inject constructor(
         queries[QUERY_FILL_INGREDIENTS] = "true"
 
         return queries
-    }
-
-    private fun handleFoodRecipesResponse(response: Response<RecipesPresentationModel>): NetworkResultUiState<RecipesPresentationModel> {
-        when {
-            response.message().toString().contains("timeout") -> {
-                return NetworkResultUiState.Error("Timeout")
-            }
-
-            response.code() == 402 -> {
-                return NetworkResultUiState.Error("API Key Limited.")
-            }
-
-            response.body()!!.results.isNullOrEmpty() -> {
-                return NetworkResultUiState.Error("Recipes not found.")
-            }
-
-            response.isSuccessful -> {
-                val foodRecipes = response.body()
-                return NetworkResultUiState.Success(foodRecipes!!)
-            }
-
-            else -> {
-                return NetworkResultUiState.Error(response.message())
-            }
-        }
     }
 
 //    private fun saveBackOnline(backOnline: Boolean) =
