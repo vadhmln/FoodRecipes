@@ -10,10 +10,14 @@ import android.widget.TextView
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
 import com.facebook.shimmer.ShimmerFrameLayout
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import ru.vdh.foodrecipes.common.utils.observeOnce
 import ru.vdh.foodrecipes.core.ui.mapper.ViewStateBinder
 import ru.vdh.foodrecipes.core.ui.view.BaseFragment
 import ru.vdh.foodrecipes.core.ui.view.ViewsProvider
@@ -42,6 +46,8 @@ class RecipesFragment :
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+
+    private val args by navArgs<RecipesFragmentArgs>()
 
     val adapter by lazy { RecipesAdapter() }
 
@@ -90,11 +96,13 @@ class RecipesFragment :
         errorImageView = binding.errorImageView
         errorTextView = binding.errorTextView
 
+//        readDatabase()
+
         requestApiData()
-        viewModel.recipesResponse.observe(viewLifecycleOwner) { data ->
-            adapter.setData(data)
+        viewModel.recipesResponse.observe(viewLifecycleOwner) { responseData ->
+            adapter.setData(responseData)
             hideShimmerEffect()
-            Log.d("AAA", "$data")
+            Log.d("AAA", "$responseData")
         }
 
         binding.recipesFab.setOnClickListener {
@@ -111,9 +119,30 @@ class RecipesFragment :
         handleInternetConnectionError(errorTextView)
     }
 
+    private fun readDatabase() {
+        lifecycleScope.launch {
+            viewModel.readRecipes.observeOnce(viewLifecycleOwner) { data ->
+
+                if (data.results.isNotEmpty() && !args.backFromBottomSheet) {
+                    adapter.setData(data)
+                    hideShimmerEffect()
+                    Log.d("AAA", "$data")
+                } else {
+                    requestApiData()
+                    viewModel.recipesResponse.observe(viewLifecycleOwner) { responseData ->
+                        adapter.setData(responseData)
+                        hideShimmerEffect()
+                        Log.d("AAA", "$responseData")
+                    }
+                }
+            }
+        }
+
+
+    }
+
     private fun requestApiData() {
         viewModel.getRecipesSafeCall(viewModel.applyQueries())
-
     }
 
     private fun handleInternetConnectionError(view: View) {

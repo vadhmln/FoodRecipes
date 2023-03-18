@@ -30,11 +30,13 @@ import ru.vdh.foodrecipes.common.utils.Constants.Companion.QUERY_TYPE
 import ru.vdh.foodrecipes.core.presentation.viewmodel.BaseViewModel
 import ru.vdh.foodrecipes.core.presentation.viewmodel.usecase.UseCaseExecutorProvider
 import ru.vdh.foodrecipes.recipes.domain.usecase.GetRecipesUseCase
+import ru.vdh.foodrecipes.recipes.domain.usecase.ReadDatabaseUseCase
 import ru.vdh.foodrecipes.recipes.domain.usecase.SaveMealAndDietTypeUseCase
 import ru.vdh.foodrecipes.recipes.presentation.NetworkResultUiState
 import ru.vdh.foodrecipes.recipes.presentation.destination.NewFeaturePresentationDestination.SecondFeature
 import ru.vdh.foodrecipes.recipes.presentation.mapper.DataStoreDomainToPresentationMapper
 import ru.vdh.foodrecipes.recipes.presentation.mapper.ErrorResponseDomainToPresentationMapper
+import ru.vdh.foodrecipes.recipes.presentation.mapper.RecipesDatabaseDomainToPresentationMapper
 import ru.vdh.foodrecipes.recipes.presentation.mapper.RecipesDomainToPresentationMapper
 import ru.vdh.foodrecipes.recipes.presentation.mapper.RecipesPresentationToDomainMapper
 import ru.vdh.foodrecipes.recipes.presentation.model.MealAndDietTypePresentationModel
@@ -47,9 +49,11 @@ import javax.inject.Inject
 class RecipesFragmentViewModel @Inject constructor(
     private val getRecipesUseCase: GetRecipesUseCase,
     private val saveMealAndDietTypeUseCase: SaveMealAndDietTypeUseCase,
+    private val readDatabaseUseCase: ReadDatabaseUseCase,
     useCaseExecutorProvider: UseCaseExecutorProvider,
     private val dataStoreDomainToPresentationMapper: DataStoreDomainToPresentationMapper,
     private val recipesDomainToPresentationMapper: RecipesDomainToPresentationMapper,
+    private val recipesDatabaseDomainToPresentationMapper: RecipesDatabaseDomainToPresentationMapper,
     private val application: Application,
 ) : BaseViewModel<RecipesViewState, NewFeaturePresentationNotification>(
     useCaseExecutorProvider
@@ -59,12 +63,15 @@ class RecipesFragmentViewModel @Inject constructor(
         Log.e("AAA", "RecipesFragmentViewModel created!!!")
     }
 
-//    private lateinit var mealAndDiet: MealAndDietTypePresentationModel
-
     private var mealType = DEFAULT_MEAL_TYPE
     private var dietType = DEFAULT_DIET_TYPE
 
     override fun initialState() = RecipesViewState()
+
+    val readRecipes: LiveData<RecipesPresentationModel> =
+        readDatabaseUseCase.executeInBackground(0).map {
+            recipesDatabaseDomainToPresentationMapper.toPresentation(it)
+        }.asLiveData()
 
     var recipesResponse: LiveData<RecipesPresentationModel> = MutableLiveData()
 

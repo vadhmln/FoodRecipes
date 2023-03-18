@@ -9,8 +9,10 @@ import com.skydoves.sandwich.suspendOnError
 import com.skydoves.sandwich.suspendOnException
 import com.skydoves.sandwich.suspendOnSuccess
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flatMap
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.toList
 import retrofit2.Response
 import ru.vdh.foodrecipes.database.RecipesDao
 import ru.vdh.foodrecipes.database.entities.RecipesEntity

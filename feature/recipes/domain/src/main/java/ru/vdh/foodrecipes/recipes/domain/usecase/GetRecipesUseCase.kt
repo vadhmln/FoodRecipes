@@ -4,10 +4,10 @@ import kotlinx.coroutines.flow.Flow
 import ru.vdh.foodrecipes.core.domain.coroutine.CoroutineContextProvider
 import ru.vdh.foodrecipes.core.domain.usecase.BackgroundExecutingUseCase
 import ru.vdh.foodrecipes.recipes.domain.model.RecipesDomainModel
-import ru.vdh.foodrecipes.recipes.domain.repository.RecipesRemoteRepository
+import ru.vdh.foodrecipes.recipes.domain.repository.RecipesRepository
 
 class GetRecipesUseCase(
-    private val recipesRemoteRepository: RecipesRemoteRepository,
+    private val recipesRepository: RecipesRepository,
     private val coroutineContextProvider: CoroutineContextProvider
 ) : BackgroundExecutingUseCase<RecipesDomainModel, Flow<RecipesDomainModel>>(coroutineContextProvider) {
 
@@ -21,5 +21,5 @@ class GetRecipesUseCase(
         onComplete: () -> Unit,
         onError: (String?) -> Unit
     ) =
-        recipesRemoteRepository.getRecipes(queries, onStart, onComplete, onError)
+        recipesRepository.getRecipes(queries, onStart, onComplete, onError)
 }
