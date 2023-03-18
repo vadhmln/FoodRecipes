@@ -82,6 +82,10 @@ class RecipesBottomSheet : BottomSheetDialogFragment() {
         return binding.root
     }
 
+    private fun requestApiData() {
+        viewModel.getRecipesSafeCall(viewModel.applyQueries())
+    }
+
     private fun updateChip(chipId: Int, chipGroup: ChipGroup) {
         if (chipId != 0) {
             try {

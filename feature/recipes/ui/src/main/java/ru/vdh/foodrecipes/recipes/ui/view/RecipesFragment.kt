@@ -96,14 +96,7 @@ class RecipesFragment :
         errorImageView = binding.errorImageView
         errorTextView = binding.errorTextView
 
-//        readDatabase()
-
-        requestApiData()
-        viewModel.recipesResponse.observe(viewLifecycleOwner) { responseData ->
-            adapter.setData(responseData)
-            hideShimmerEffect()
-            Log.d("AAA", "$responseData")
-        }
+        readDatabase()
 
         binding.recipesFab.setOnClickListener {
 
@@ -123,26 +116,25 @@ class RecipesFragment :
         lifecycleScope.launch {
             viewModel.readRecipes.observeOnce(viewLifecycleOwner) { data ->
 
-                if (data.results.isNotEmpty() && !args.backFromBottomSheet) {
+                if (args.backFromBottomSheet) {
+                    requestApiData()
+                } else {
+                    Log.d("RecipesFragment", "readDatabase called!")
                     adapter.setData(data)
                     hideShimmerEffect()
-                    Log.d("AAA", "$data")
-                } else {
-                    requestApiData()
-                    viewModel.recipesResponse.observe(viewLifecycleOwner) { responseData ->
-                        adapter.setData(responseData)
-                        hideShimmerEffect()
-                        Log.d("AAA", "$responseData")
-                    }
+                    Log.d("args.backFromBottomSheet", "${args.backFromBottomSheet}")
                 }
             }
         }
-
-
     }
 
     private fun requestApiData() {
         viewModel.getRecipesSafeCall(viewModel.applyQueries())
+        viewModel.recipesResponse.observe(viewLifecycleOwner) { responseData ->
+            adapter.setData(responseData)
+            hideShimmerEffect()
+            Log.d("RecipesFragment", "requestApiData called!")
+        }
     }
 
     private fun handleInternetConnectionError(view: View) {

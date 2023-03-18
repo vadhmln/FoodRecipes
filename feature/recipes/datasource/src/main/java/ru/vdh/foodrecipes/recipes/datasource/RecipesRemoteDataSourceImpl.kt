@@ -80,7 +80,7 @@ class RecipesRemoteDataSourceImpl(
             }.suspendOnException { error(message()) }
         } else {
             emit(recipesDatabaseToDataMapper.toData(recipesDao.readRecipes()))
-            Timber.tag("RecipesRemoteDataSourceImpl").d("recipesDao called!")
+            Log.d("RecipesRemoteDataSourceImpl", "recipesDao called!")
         }
     }.flowOn(Dispatchers.IO)
 
