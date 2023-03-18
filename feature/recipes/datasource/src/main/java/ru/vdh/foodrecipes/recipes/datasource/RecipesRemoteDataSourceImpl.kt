@@ -36,7 +36,6 @@ class RecipesRemoteDataSourceImpl(
     private val errorResponseToDataMapper: ErrorResponseToDataMapper,
 ) : RecipesRemoteDataSource {
 
-    @WorkerThread
     override suspend fun getRecipes(
         queries: Map<String, String>,
         onStart: () -> Unit,
@@ -56,10 +55,10 @@ class RecipesRemoteDataSourceImpl(
                 emit(recipe)
 
             }.suspendOnError {
+                Log.d("onError", message())
                 map(ErrorResponseMapper) {
                     onError("[Code: $code]: $message")
-                    Timber.d("[Code: $code]: $message")
-
+                    Log.d("onError","[Code: $code]: $message")
                     when {
                         code == 402 -> {
                             message = "API Key Limited."
@@ -72,7 +71,7 @@ class RecipesRemoteDataSourceImpl(
                 }
             }.onFailure {
                 onError(message())
-                Timber.d(message())
+                Log.d("onError", message())
             }.suspendOnException { error(message()) }
     }.flowOn(Dispatchers.IO)
 

@@ -103,7 +103,9 @@ class RecipesFragmentViewModel @Inject constructor(
                 queries,
                 onStart = { },
                 onComplete = { },
-                onError = { }
+                onError = {
+                    Log.e("onError", "$it")
+                }
             ).asLiveData()
         recipesResponse = list.map(recipesDomainToPresentationMapper::toPresentation)
 
@@ -137,10 +139,10 @@ class RecipesFragmentViewModel @Inject constructor(
         return queries
     }
 
-//    private fun saveBackOnline(backOnline: Boolean) =
-//        viewModelScope.launch(Dispatchers.IO) {
-//            dataStoreRepository.saveBackOnline(backOnline)
-//        }
+    private fun saveBackOnline(backOnline: Boolean) =
+        viewModelScope.launch(Dispatchers.IO) {
+            saveMealAndDietTypeUseCase.saveBackOnline(backOnline)
+        }
 
     fun hasInternetConnection(): Boolean {
         val connectivityManager = application.getSystemService(
@@ -159,11 +161,11 @@ class RecipesFragmentViewModel @Inject constructor(
     fun showNetworkStatus() {
         if (!networkStatus) {
             Toast.makeText(application, "No Internet Connection.", Toast.LENGTH_SHORT).show()
-//            saveBackOnline(true)
+            saveBackOnline(true)
         } else if (networkStatus) {
             if (backOnline) {
                 Toast.makeText(application, "We're back online.", Toast.LENGTH_SHORT).show()
-//                saveBackOnline(false)
+                saveBackOnline(false)
             }
         }
     }

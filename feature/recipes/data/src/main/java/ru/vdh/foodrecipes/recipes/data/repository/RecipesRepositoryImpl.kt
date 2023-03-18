@@ -1,5 +1,6 @@
 package ru.vdh.foodrecipes.recipes.data.repository
 
+import androidx.annotation.WorkerThread
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf

@@ -26,4 +26,6 @@ class SaveMealAndDietTypeUseCase(
 
     val readBackOnline = dataStoreRepository.readBackOnline
 
+    suspend fun saveBackOnline(backOnline: Boolean) = dataStoreRepository.saveBackOnline(backOnline)
+
 }

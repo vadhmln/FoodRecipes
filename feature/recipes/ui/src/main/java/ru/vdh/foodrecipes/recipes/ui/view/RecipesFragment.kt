@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.facebook.shimmer.ShimmerFrameLayout
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import ru.vdh.foodrecipes.common.utils.NetworkListener
 import ru.vdh.foodrecipes.common.utils.observeOnce
 import ru.vdh.foodrecipes.core.ui.mapper.ViewStateBinder
 import ru.vdh.foodrecipes.core.ui.view.BaseFragment
@@ -52,6 +53,8 @@ class RecipesFragment :
     val adapter by lazy { RecipesAdapter() }
 
     override val viewModel: RecipesFragmentViewModel by viewModels()
+
+    private lateinit var networkListener: NetworkListener
 
     override val layoutResourceId = R.layout.recipes_fragment
 
@@ -96,35 +99,49 @@ class RecipesFragment :
         errorImageView = binding.errorImageView
         errorTextView = binding.errorTextView
 
-        readDatabase()
+        viewModel.readBackOnline.observe(viewLifecycleOwner) {
+            viewModel.backOnline = it
+        }
+
+        lifecycleScope.launchWhenStarted {
+            networkListener = NetworkListener()
+            networkListener.checkNetworkAvailability(requireContext())
+                .collect { status ->
+                    Log.d("NetworkListener", status.toString())
+                    viewModel.networkStatus = status
+                    viewModel.showNetworkStatus()
+                    readDatabase()
+                    handleInternetConnectionError(errorImageView)
+                    handleInternetConnectionError(errorTextView)
+                }
+        }
 
         binding.recipesFab.setOnClickListener {
-
-            findNavController().navigate(RecipesFragmentDirections.actionRecipesFragmentToRecipesBottomSheet())
+            if (viewModel.networkStatus) {
+                findNavController().navigate(RecipesFragmentDirections.actionRecipesFragmentToRecipesBottomSheet())
+            } else {
+                viewModel.showNetworkStatus()
+            }
         }
 
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        handleInternetConnectionError(errorImageView)
-        handleInternetConnectionError(errorTextView)
-    }
-
     private fun readDatabase() {
-        lifecycleScope.launch {
-            viewModel.readRecipes.observeOnce(viewLifecycleOwner) { data ->
+        if (viewModel.hasInternetConnection()) {
+            lifecycleScope.launch {
+                viewModel.readRecipes.observeOnce(viewLifecycleOwner) { data ->
 
-                if (args.backFromBottomSheet) {
-                    requestApiData()
-                } else {
-                    Log.d("RecipesFragment", "readDatabase called!")
-                    adapter.setData(data)
-                    hideShimmerEffect()
+                    if (!args.backFromBottomSheet) {
+                        Log.d("RecipesFragment", "readDatabase called!")
+                        adapter.setData(data)
+                        hideShimmerEffect()
+                    } else {
+                        requestApiData()
+                    }
                 }
             }
-        }
+        } else viewModel.errorMassage = "No Internet Connection."
     }
 
     private fun requestApiData() {
@@ -157,27 +174,6 @@ class RecipesFragment :
                     view.visibility = View.VISIBLE
                     view.text = viewModel.errorMassage
                 }
-            }
-        }
-    }
-
-    private fun handleReadDataErrors(
-        view: View,
-        apiResponse: RecipeErrorResponsePresentationModel?,
-
-        ) {
-        when (view) {
-            is ImageView -> {
-                if (apiResponse != null) {
-                    view.isVisible = apiResponse.message?.contains("error") ?: view.isInvisible
-                }
-            }
-
-            is TextView -> {
-                if (apiResponse != null) {
-                    view.isVisible = apiResponse.message?.contains("error") ?: view.isInvisible
-                }
-                view.text = apiResponse?.message.toString()
             }
         }
     }
