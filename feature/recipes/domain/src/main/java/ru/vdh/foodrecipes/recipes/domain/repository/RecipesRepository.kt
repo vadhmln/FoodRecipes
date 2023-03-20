@@ -13,7 +13,7 @@ interface RecipesRepository {
         onError: (String?) -> Unit
     ): Flow<RecipesDomainModel>
 
-    suspend fun searchRecipes(searchQuery: Map<String, String>): List<RecipesDomainModel>
+    suspend fun searchRecipes(searchQuery: Map<String, String>): Flow<RecipesDomainModel>
 
     suspend fun getFoodJoke(apiKey: String): List<FoodJokeDomainModel>
 

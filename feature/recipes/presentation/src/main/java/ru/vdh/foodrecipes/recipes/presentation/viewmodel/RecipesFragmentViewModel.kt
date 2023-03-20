@@ -26,6 +26,7 @@ import ru.vdh.foodrecipes.common.utils.Constants.Companion.QUERY_API_KEY
 import ru.vdh.foodrecipes.common.utils.Constants.Companion.QUERY_DIET
 import ru.vdh.foodrecipes.common.utils.Constants.Companion.QUERY_FILL_INGREDIENTS
 import ru.vdh.foodrecipes.common.utils.Constants.Companion.QUERY_NUMBER
+import ru.vdh.foodrecipes.common.utils.Constants.Companion.QUERY_SEARCH
 import ru.vdh.foodrecipes.common.utils.Constants.Companion.QUERY_TYPE
 import ru.vdh.foodrecipes.core.presentation.viewmodel.BaseViewModel
 import ru.vdh.foodrecipes.core.presentation.viewmodel.usecase.UseCaseExecutorProvider
@@ -74,6 +75,7 @@ class RecipesFragmentViewModel @Inject constructor(
         }.asLiveData()
 
     var recipesResponse: LiveData<RecipesPresentationModel> = MutableLiveData()
+    var searchedRecipesResponse: LiveData<RecipesPresentationModel> = MutableLiveData()
 
     lateinit var errorMassage: String
     var networkStatus = false
@@ -83,10 +85,31 @@ class RecipesFragmentViewModel @Inject constructor(
         saveMealAndDietTypeUseCase.readMealAndDietType.map(dataStoreDomainToPresentationMapper::toPresentation)
     val readBackOnline = saveMealAndDietTypeUseCase.readBackOnline.asLiveData()
 
-    fun getRecipesSafeCall(queries: Map<String, String>) {
+    fun getRecipes(queries: Map<String, String>) = viewModelScope.launch {
+        getRecipesSafeCall(queries)
+    }
+
+    fun searchRecipes(searchQuery: Map<String, String>) = viewModelScope.launch {
+        searchRecipesSafeCall(searchQuery)
+    }
+
+    private suspend fun getRecipesSafeCall(queries: Map<String, String>) {
         try {
             if (hasInternetConnection()) {
-                getRecipes(queries)
+                val list =
+                    getRecipesUseCase.getRecipes(
+                        queries,
+                        onStart = { },
+                        onComplete = { },
+                        onError = {
+                            Log.e("onError", "$it")
+                        }
+                    ).asLiveData()
+                recipesResponse = list.map(recipesDomainToPresentationMapper::toPresentation)
+
+                updateViewState {
+                    withRecipesList(list.map(recipesDomainToPresentationMapper::toPresentation))
+                }
             } else {
                 errorMassage = "No Internet Connection."
             }
@@ -94,29 +117,34 @@ class RecipesFragmentViewModel @Inject constructor(
             errorMassage = "Recipes not found."
             e.printStackTrace()
         }
-
     }
 
-    private fun getRecipes(queries: Map<String, String>) = viewModelScope.launch {
-        val list =
-            getRecipesUseCase.getRecipes(
-                queries,
-                onStart = { },
-                onComplete = { },
-                onError = {
-                    Log.e("onError", "$it")
-                }
-            ).asLiveData()
-        recipesResponse = list.map(recipesDomainToPresentationMapper::toPresentation)
+    private suspend fun searchRecipesSafeCall(searchQuery: Map<String, String>) {
+        try {
+            if (hasInternetConnection()) {
 
-        updateViewState {
-            withRecipesList(list.map(recipesDomainToPresentationMapper::toPresentation))
+                val list = getRecipesUseCase.searchRecipes(searchQuery).asLiveData()
+                searchedRecipesResponse =
+                    list.map(recipesDomainToPresentationMapper::toPresentation)
+
+            } else {
+                errorMassage = "No Internet Connection."
+            }
+        } catch (e: Exception) {
+            errorMassage = "Recipes not found."
+            Log.d("RecipesFragment", "RecipesFragmentViewModel $errorMassage")
+            e.printStackTrace()
         }
     }
 
     fun saveMealAndDietType(mealType: String, mealTypeId: Int, dietType: String, dietTypeId: Int) =
         viewModelScope.launch(Dispatchers.IO) {
-            saveMealAndDietTypeUseCase.saveMealAndDietType(mealType, mealTypeId, dietType, dietTypeId)
+            saveMealAndDietTypeUseCase.saveMealAndDietType(
+                mealType,
+                mealTypeId,
+                dietType,
+                dietTypeId
+            )
         }
 
     fun applyQueries(): HashMap<String, String> {
@@ -136,6 +164,16 @@ class RecipesFragmentViewModel @Inject constructor(
         queries[QUERY_ADD_RECIPE_INFORMATION] = "true"
         queries[QUERY_FILL_INGREDIENTS] = "true"
 
+        return queries
+    }
+
+    fun applySearchQuery(searchQuery: String): HashMap<String, String> {
+        val queries: HashMap<String, String> = HashMap()
+        queries[QUERY_SEARCH] = searchQuery
+        queries[QUERY_NUMBER] = DEFAULT_RECIPES_NUMBER
+        queries[QUERY_API_KEY] = API_KEY
+        queries[QUERY_ADD_RECIPE_INFORMATION] = "true"
+        queries[QUERY_FILL_INGREDIENTS] = "true"
         return queries
     }
 

@@ -4,11 +4,13 @@ import android.util.Log
 import androidx.annotation.WorkerThread
 import com.skydoves.sandwich.map
 import com.skydoves.sandwich.message
+import com.skydoves.sandwich.onError
 import com.skydoves.sandwich.onFailure
 import com.skydoves.sandwich.suspendOnError
 import com.skydoves.sandwich.suspendOnException
 import com.skydoves.sandwich.suspendOnSuccess
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMap
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -43,44 +45,55 @@ class RecipesRemoteDataSourceImpl(
         onError: (String?) -> Unit
     ) = flow {
 
-            val response = foodRecipesApi.getRecipes(queries)
+        val response = foodRecipesApi.getRecipes(queries)
 
-            Log.d("RecipesRemoteDataSourceImpl", "foodRecipesApi called!")
+        Log.d("RecipesRemoteDataSourceImpl", "foodRecipesApi called!")
 
-            response.suspendOnSuccess {
-                val recipe = recipesRemoteDataSourceToDataMapper.toData(data)
-                val recipeEntity =
-                    RecipesEntity(recipesDataModelToDatabaseMapper.toDatabase(recipe))
-                recipesDao.insertRecipes(recipeEntity)
-                emit(recipe)
+        response.suspendOnSuccess {
+            val recipe = recipesRemoteDataSourceToDataMapper.toData(data)
+            val recipeEntity =
+                RecipesEntity(recipesDataModelToDatabaseMapper.toDatabase(recipe))
+            recipesDao.insertRecipes(recipeEntity)
+            emit(recipe)
 
-            }.suspendOnError {
-                Log.d("onError", message())
-                map(ErrorResponseMapper) {
-                    onError("[Code: $code]: $message")
-                    Log.d("onError","[Code: $code]: $message")
-                    when {
-                        code == 402 -> {
-                            message = "API Key Limited."
-                        }
+        }.suspendOnError {
+            Log.d("onError", message())
+            map(ErrorResponseMapper) {
+                onError("[Code: $code]: $message")
+                Log.d("onError", "[Code: $code]: $message")
+                when {
+                    code == 402 -> {
+                        message = "API Key Limited."
+                    }
 
-                        message().contains("timeout") -> {
-                            message = "Timeout."
-                        }
+                    message().contains("timeout") -> {
+                        message = "Timeout."
                     }
                 }
-            }.onFailure {
-                onError(message())
-                Log.d("onError", message())
-            }.suspendOnException { error(message()) }
+            }
+        }.onFailure {
+            onError(message())
+            Log.d("onError", message())
+        }.suspendOnException { error(message()) }
     }.flowOn(Dispatchers.IO)
 
-    override suspend fun searchRecipes(searchQuery: Map<String, String>): Response<RecipesDataModel> {
-        TODO()
-//        foodRecipesApi.searchRecipes(searchQuery).map(recipesRemoteDataSourceToDataMapper::toData)
-    }
+    override suspend fun searchRecipes(searchQuery: Map<String, String>) = flow {
 
-    override suspend fun getFoodJoke(apiKey: String): Response<FoodJokeDataModel> {
+        val response = foodRecipesApi.searchRecipes(searchQuery)
+
+        response.suspendOnSuccess {
+            val recipe = recipesRemoteDataSourceToDataMapper.toData(data)
+            val recipeEntity =
+                RecipesEntity(recipesDataModelToDatabaseMapper.toDatabase(recipe))
+            recipesDao.insertRecipes(recipeEntity)
+            emit(recipe)
+        }.onFailure {
+            Log.d("onError", message())
+        }.suspendOnException { error(message()) }
+
+    }.flowOn(Dispatchers.IO)
+
+    override suspend fun getFoodJoke(apiKey: String): Flow<FoodJokeDataModel> {
         TODO()
 //        return foodRecipesApi.getFoodJoke(apiKey).map(jokesRemoteDataSourceToDataMapper::toData)
     }

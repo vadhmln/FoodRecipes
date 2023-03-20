@@ -18,11 +18,11 @@ interface FoodRecipesApi {
     @GET("/recipes/complexSearch")
     suspend fun searchRecipes(
         @QueryMap searchQuery: Map<String, String>
-    ): Response<RecipesRemoteDataSourceModel>
+    ): ApiResponse<RecipesRemoteDataSourceModel>
 
     @GET("food/jokes/random")
     suspend fun getFoodJoke(
         @Query("apiKey") apiKey: String
-    ): Response<FoodJokeRemoteDataSourceModel>
+    ): ApiResponse<FoodJokeRemoteDataSourceModel>
 
 }

@@ -22,4 +22,7 @@ class GetRecipesUseCase(
         onError: (String?) -> Unit
     ) =
         recipesRepository.getRecipes(queries, onStart, onComplete, onError)
+
+    suspend fun searchRecipes(searchQuery: Map<String, String>) =
+        recipesRepository.searchRecipes(searchQuery)
 }

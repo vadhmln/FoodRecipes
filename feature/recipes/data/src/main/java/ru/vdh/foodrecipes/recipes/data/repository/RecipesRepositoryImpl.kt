@@ -25,14 +25,12 @@ class RecipesRepositoryImpl(
         onStart: () -> Unit,
         onComplete: () -> Unit,
         onError: (String?) -> Unit
-    ): Flow<RecipesDomainModel> {
-        return recipesRemoteDataSource.getRecipes(queries, onStart, onComplete, onError)
-            .map(recipesDataToDomainMapper::toDomain)
-    }
+    ) = recipesRemoteDataSource.getRecipes(queries, onStart, onComplete, onError)
+        .map(recipesDataToDomainMapper::toDomain)
 
-    override suspend fun searchRecipes(searchQuery: Map<String, String>): List<RecipesDomainModel> {
-        TODO("Not yet implemented")
-    }
+
+    override suspend fun searchRecipes(searchQuery: Map<String, String>): Flow<RecipesDomainModel> =
+        recipesRemoteDataSource.searchRecipes(searchQuery).map(recipesDataToDomainMapper::toDomain)
 
     override suspend fun getFoodJoke(apiKey: String): List<FoodJokeDomainModel> {
         TODO("Not yet implemented")

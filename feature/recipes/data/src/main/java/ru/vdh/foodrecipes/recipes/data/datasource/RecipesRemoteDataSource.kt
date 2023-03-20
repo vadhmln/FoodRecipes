@@ -14,7 +14,7 @@ interface RecipesRemoteDataSource {
         onError: (String?) -> Unit
     ): Flow<RecipesDataModel>
 
-    suspend fun searchRecipes(searchQuery: Map<String, String>): Response<RecipesDataModel>
+    suspend fun searchRecipes(searchQuery: Map<String, String>): Flow<RecipesDataModel>
 
-    suspend fun getFoodJoke(apiKey: String): Response<FoodJokeDataModel>
+    suspend fun getFoodJoke(apiKey: String): Flow<FoodJokeDataModel>
 }
