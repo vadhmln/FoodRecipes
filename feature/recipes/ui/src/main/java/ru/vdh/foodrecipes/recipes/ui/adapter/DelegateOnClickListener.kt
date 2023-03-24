@@ -6,7 +6,7 @@ class DelegateOnClickListener @Inject constructor() : RecipesAdapter.OnClickList
     var onToDoItemClickListener: RecipesAdapter.OnClickListener =
         RecipesAdapter.OnClickListener.DoNothing
 
-    override fun onToDoItemClick(toDoId: Int) {
-        onToDoItemClickListener.onToDoItemClick(toDoId)
+    override fun onRecipeItemClick(recipeId: Int) {
+        onToDoItemClickListener.onRecipeItemClick(recipeId)
     }
 }

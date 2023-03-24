@@ -11,4 +11,5 @@ class RecipesEntity(
 ) {
     @PrimaryKey(autoGenerate = false)
     var id: Int = 0
+
 }

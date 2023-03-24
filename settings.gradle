@@ -45,6 +45,13 @@ include ':feature:foodjoke:domain'
 include ':feature:foodjoke:data'
 include ':feature:foodjoke:datasource'
 
+include ':feature:recipedetails'
+include ':feature:recipedetails:ui'
+include ':feature:recipedetails:presentation'
+include ':feature:recipedetails:domain'
+include ':feature:recipedetails:data'
+include ':feature:recipedetails:datasource'
+
 include ':core'
 include ':core:ui'
 include ':core:presentation'

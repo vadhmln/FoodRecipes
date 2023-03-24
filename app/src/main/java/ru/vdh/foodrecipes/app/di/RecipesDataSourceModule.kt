@@ -21,6 +21,7 @@ import ru.vdh.foodrecipes.recipes.datasource.mapper.RecipesDataToDatabaseMapper
 import ru.vdh.foodrecipes.recipes.datasource.mapper.RecipesDatabaseToDataMapper
 import ru.vdh.foodrecipes.recipes.datasource.mapper.RecipesLocalDatabaseToDataMapper
 import ru.vdh.foodrecipes.recipes.datasource.mapper.RecipesRemoteDataSourceToDataMapper
+import ru.vdh.foodrecipes.recipes.datasource.mapper.ResultDataToDatabaseMapper
 import javax.inject.Singleton
 
 @Module
@@ -55,16 +56,14 @@ class RecipesDataSourceModule {
         foodRecipesApi: FoodRecipesApi,
         recipesDao: RecipesDao,
         recipesRemoteDataSourceToDataMapper: RecipesRemoteDataSourceToDataMapper,
-        recipesDatabaseToDataMapper: RecipesDatabaseToDataMapper,
+        resultDataToDatabaseMapper: ResultDataToDatabaseMapper,
         recipesDataModelToDatabaseMapper: RecipesDataModelToDatabaseMapper,
-        errorResponseToDataMapper: ErrorResponseToDataMapper,
     ): RecipesRemoteDataSource = RecipesRemoteDataSourceImpl(
         foodRecipesApi,
         recipesDao,
         recipesRemoteDataSourceToDataMapper,
-        recipesDatabaseToDataMapper,
+        resultDataToDatabaseMapper,
         recipesDataModelToDatabaseMapper,
-        errorResponseToDataMapper,
     )
 
     @Provides

@@ -4,7 +4,7 @@ import ru.vdh.foodrecipes.core.presentation.model.PresentationDestination
 
 sealed interface NewFeaturePresentationDestination: PresentationDestination {
 
-    data class SecondFeature(
+    data class RecipeDetails(
         val id: Int
     ) : NewFeaturePresentationDestination
 }

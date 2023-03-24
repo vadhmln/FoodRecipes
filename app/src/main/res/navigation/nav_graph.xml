@@ -6,18 +6,17 @@
 
     <include
         android:id="@id/nav_recipes"
-        app:graph="@navigation/nav_recipes">
-    </include>
+        app:graph="@navigation/nav_recipes"></include>
 
     <include
         android:id="@id/nav_favorite_recipes"
-        app:graph="@navigation/nav_favorite_recipes">
-    </include>
+        app:graph="@navigation/nav_favorite_recipes"></include>
 
     <include
         android:id="@id/nav_food_joke"
-        app:graph="@navigation/nav_food_joke">
-    </include>
+        app:graph="@navigation/nav_food_joke"></include>
+
+    <include app:graph="@navigation/nav_recipe_details" />
 
     <action
         android:id="@+id/action_global_to_nav_food_joke"
@@ -30,6 +29,13 @@
     <action
         android:id="@+id/action_global_to_nav_favorite_recipes"
         app:destination="@id/nav_favorite_recipes" />
+    <action
+        android:id="@+id/action_global_to_navRecipeDetails"
+        app:destination="@id/navRecipeDetails">
+        <argument
+            android:name="recipeId"
+            app:argType="integer" />
+    </action>
 
 
 </navigation>

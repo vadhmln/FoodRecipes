@@ -1,0 +1,66 @@
+plugins {
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.hilt.android)
+    id 'kotlin-kapt'
+    id 'androidx.navigation.safeargs.kotlin'
+}
+
+android {
+    namespace 'ru.vdh.foodrecipes.recipedetails.ui'
+    compileSdk libs.versions.compileSdk.get().toInteger()
+
+    defaultConfig {
+        minSdk libs.versions.minSdk.get().toInteger()
+        targetSdk libs.versions.targetSdk.get().toInteger()
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+    buildFeatures {
+        viewBinding true
+    }
+}
+
+dependencies {
+    implementation project(':common')
+    implementation project(':core:ui')
+    implementation project(':core:presentation')
+    implementation project(':feature:recipedetails:presentation')
+
+    implementation libs.bundles.android.core
+    implementation(libs.bundles.fragment)
+    implementation(libs.androidx.lifecycle.livedata)
+    implementation(libs.androidx.lifecycle.viewmodel)
+    implementation libs.kotlin.stdlib
+
+    //Hilt
+    implementation(libs.hilt.android)
+    kapt libs.hilt.compiler
+
+    implementation "androidx.viewpager2:viewpager2:1.0.0"
+
+    // Image Loading library Coil
+    implementation libs.coil
+
+    implementation libs.androidx.junit.ktx
+
+}
+// Allow references to generated code
+kapt {
+    correctErrorTypes true
+}

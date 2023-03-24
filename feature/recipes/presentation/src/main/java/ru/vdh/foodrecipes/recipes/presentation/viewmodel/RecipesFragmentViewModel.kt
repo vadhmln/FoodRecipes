@@ -13,10 +13,8 @@ import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import retrofit2.Response
 import ru.vdh.foodrecipes.common.utils.Constants.Companion.API_KEY
 import ru.vdh.foodrecipes.common.utils.Constants.Companion.DEFAULT_DIET_TYPE
 import ru.vdh.foodrecipes.common.utils.Constants.Companion.DEFAULT_MEAL_TYPE
@@ -33,14 +31,10 @@ import ru.vdh.foodrecipes.core.presentation.viewmodel.usecase.UseCaseExecutorPro
 import ru.vdh.foodrecipes.recipes.domain.usecase.GetRecipesUseCase
 import ru.vdh.foodrecipes.recipes.domain.usecase.ReadDatabaseUseCase
 import ru.vdh.foodrecipes.recipes.domain.usecase.SaveMealAndDietTypeUseCase
-import ru.vdh.foodrecipes.recipes.presentation.NetworkResultUiState
-import ru.vdh.foodrecipes.recipes.presentation.destination.NewFeaturePresentationDestination.SecondFeature
+import ru.vdh.foodrecipes.recipes.presentation.destination.NewFeaturePresentationDestination.RecipeDetails
 import ru.vdh.foodrecipes.recipes.presentation.mapper.DataStoreDomainToPresentationMapper
-import ru.vdh.foodrecipes.recipes.presentation.mapper.ErrorResponseDomainToPresentationMapper
 import ru.vdh.foodrecipes.recipes.presentation.mapper.RecipesDatabaseDomainToPresentationMapper
 import ru.vdh.foodrecipes.recipes.presentation.mapper.RecipesDomainToPresentationMapper
-import ru.vdh.foodrecipes.recipes.presentation.mapper.RecipesPresentationToDomainMapper
-import ru.vdh.foodrecipes.recipes.presentation.model.MealAndDietTypePresentationModel
 import ru.vdh.foodrecipes.recipes.presentation.model.NewFeaturePresentationNotification
 import ru.vdh.foodrecipes.recipes.presentation.model.RecipesViewState
 import ru.vdh.foodrecipes.recipes.presentation.model.RecipesPresentationModel
@@ -84,6 +78,10 @@ class RecipesFragmentViewModel @Inject constructor(
     val readMealAndDietType =
         saveMealAndDietTypeUseCase.readMealAndDietType.map(dataStoreDomainToPresentationMapper::toPresentation)
     val readBackOnline = saveMealAndDietTypeUseCase.readBackOnline.asLiveData()
+
+    fun onRecipeDetailsAction(recipeId: Int) {
+        navigateTo(RecipeDetails(recipeId))
+    }
 
     fun getRecipes(queries: Map<String, String>) = viewModelScope.launch {
         getRecipesSafeCall(queries)
@@ -217,9 +215,5 @@ class RecipesFragmentViewModel @Inject constructor(
     override fun onCleared() {
         Log.e("AAA", "RecipesFragmentViewModel cleared!!!")
         super.onCleared()
-    }
-
-    fun onSecondFeatureAction(id: Int) {
-        navigateTo(SecondFeature(id))
     }
 }

@@ -3,6 +3,7 @@ package ru.vdh.foodrecipes.main
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
@@ -13,6 +14,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import ru.vdh.foodrecipes.R
 import ru.vdh.foodrecipes.databinding.ActivityMainBinding
+import ru.vdh.foodrecipes.recipedetails.presentation.viewmodel.RecipeDetailsViewModel
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {

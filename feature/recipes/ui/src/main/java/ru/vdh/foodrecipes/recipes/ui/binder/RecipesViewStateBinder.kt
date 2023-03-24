@@ -1,16 +1,7 @@
 package ru.vdh.foodrecipes.recipes.ui.binder
 
-import android.util.Log
-import android.view.View
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.core.view.isVisible
-import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import ru.vdh.foodrecipes.core.ui.mapper.ViewStateBinder
-import ru.vdh.foodrecipes.recipes.presentation.NetworkResult
-import ru.vdh.foodrecipes.recipes.presentation.model.RecipeErrorResponsePresentationModel
-import ru.vdh.foodrecipes.recipes.presentation.model.RecipesPresentationModel
 import ru.vdh.foodrecipes.recipes.presentation.model.RecipesViewState
 import ru.vdh.foodrecipes.recipes.ui.adapter.RecipesAdapter
 import ru.vdh.foodrecipes.recipes.ui.view.RecipesFragment
@@ -38,12 +29,12 @@ class RecipesViewStateBinder @Inject constructor(
     }
 
     private inner class DelegateOnClickListener : RecipesAdapter.OnClickListener {
-        override fun onToDoItemClick(toDoId: Int) {
-            onToDoItemClickListener.onItemClick(toDoId)
+        override fun onRecipeItemClick(recipeId: Int) {
+            onToDoItemClickListener.onItemClick(recipeId)
         }
     }
 
     interface OnClickListener {
-        fun onItemClick(toDoId: Int)
+        fun onItemClick(recipeId: Int)
     }
 }

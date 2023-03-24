@@ -29,7 +29,6 @@ import ru.vdh.foodrecipes.core.ui.mapper.ViewStateBinder
 import ru.vdh.foodrecipes.core.ui.view.BaseFragment
 import ru.vdh.foodrecipes.core.ui.view.ViewsProvider
 import ru.vdh.foodrecipes.recipes.presentation.model.NewFeaturePresentationNotification
-import ru.vdh.foodrecipes.recipes.presentation.model.RecipesPresentationModel
 import ru.vdh.foodrecipes.recipes.presentation.model.RecipesViewState
 import ru.vdh.foodrecipes.recipes.presentation.viewmodel.RecipesFragmentViewModel
 import ru.vdh.foodrecipes.recipes.ui.mapper.RecipesDestinationToUiMapper
@@ -264,8 +263,8 @@ class RecipesFragment :
         binding.recyclerview.visibility = View.VISIBLE
     }
 
-    override fun onItemClick(toDoId: Int) {
-
+    override fun onItemClick(recipeId: Int) {
+        viewModel.onRecipeDetailsAction(recipeId)
     }
 
     override fun onDestroyView() {

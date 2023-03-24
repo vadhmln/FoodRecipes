@@ -73,6 +73,12 @@ dependencies {
     implementation project(':feature:foodjoke:data')
     implementation project(':feature:foodjoke:datasource')
 
+    implementation project (':feature:recipedetails:ui')
+    implementation project (':feature:recipedetails:presentation')
+    implementation project (':feature:recipedetails:domain')
+    implementation project (':feature:recipedetails:data')
+    implementation project (':feature:recipedetails:datasource')
+
     implementation(libs.bundles.android.core)
     implementation(libs.bundles.fragment)
     implementation(libs.kotlinx.coroutines.android)

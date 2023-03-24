@@ -13,12 +13,14 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ActivityComponent
 import ru.vdh.foodrecipes.R
 import ru.vdh.foodrecipes.app.navigation.AppFoodJokeDestinationToUiMapper
+import ru.vdh.foodrecipes.app.navigation.AppRecipeDetailsDestinationToUiMapper
 import ru.vdh.foodrecipes.app.navigation.AppRecipesDestinationToUiMapper
 import ru.vdh.foodrecipes.app.navigation.AppSecondFeatureDestinationToUiMapper
 import ru.vdh.foodrecipes.navigation.mapper.GlobalDestinationToUiMapper
 import ru.vdh.foodrecipes.recipes.ui.mapper.RecipesDestinationToUiMapper
 import ru.vdh.foodrecipes.favoriterecipes.ui.mapper.SecondFeatureDestinationToUiMapper
 import ru.vdh.foodrecipes.foodjoke.ui.mapper.FoodJokeDestinationToUiMapper
+import ru.vdh.foodrecipes.recipedetails.ui.mapper.NewFeatureDestinationToUiMapper
 
 @Module
 @InstallIn(ActivityComponent::class)
@@ -60,4 +62,11 @@ class NavigationModule {
         globalDestinationToUiMapper: GlobalDestinationToUiMapper
     ): FoodJokeDestinationToUiMapper =
         AppFoodJokeDestinationToUiMapper(activity, globalDestinationToUiMapper)
+
+    @Provides
+    fun providesAppRecipeDetailsDestinationToUiMapper(
+        activity: FragmentActivity,
+        globalDestinationToUiMapper: GlobalDestinationToUiMapper
+    ): NewFeatureDestinationToUiMapper =
+        AppRecipeDetailsDestinationToUiMapper(activity, globalDestinationToUiMapper)
 }

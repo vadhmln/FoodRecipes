@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navRecipeDetails"
+    app:startDestination="@id/recipeDetailsFragment">
+
+    <fragment
+        android:id="@+id/recipeDetailsFragment"
+        android:name="ru.vdh.foodrecipes.recipedetails.ui.view.RecipeDetailsFragment"
+        android:label="Recipe Details"
+        tools:layout="@layout/recipe_details_fragment" >
+        <argument
+            android:name="recipeId"
+            app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/overviewFragment"
+        android:name="ru.vdh.foodrecipes.recipedetails.ui.view.OverviewFragment"
+        android:label="fragment_overview"
+        tools:layout="@layout/fragment_overview" >
+        <argument
+            android:name="recipeId"
+            app:argType="integer" />
+    </fragment>
+</navigation>

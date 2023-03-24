@@ -7,15 +7,15 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import org.jsoup.Jsoup
+import ru.vdh.foodrecipes.common.utils.applyVeganColor
+import ru.vdh.foodrecipes.common.utils.parseHtml
 import ru.vdh.foodrecipes.recipes.presentation.model.RecipesPresentationModel
 import ru.vdh.foodrecipes.recipes.presentation.model.ResultPresentationModel
 import ru.vdh.foodrecipes.recipes.ui.R
-import ru.vdh.foodrecipes.recipes.ui.databinding.RecipesRowLayoutBinding
 import javax.inject.Inject
 
 class RecipesAdapter @Inject constructor() : RecyclerView.Adapter<RecipesAdapter.MyViewHolder>() {
@@ -60,6 +60,12 @@ class RecipesAdapter @Inject constructor() : RecyclerView.Adapter<RecipesAdapter
         holder.clockTextView.text = currentRecipe.readyInMinutes.toString()
         applyVeganColor(holder.leafImage, currentRecipe.vegan)
         applyVeganColor(holder.leafTextView, currentRecipe.vegan)
+        holder.itemView.setOnClickListener {
+            Log.d("onRecipeItemClick", "Clicked!!!")
+
+            onToDoItemClickListener.onRecipeItemClick(currentRecipe.recipeId)
+            Log.d("onRecipeItemClick", currentRecipe.recipeId.toString())
+        }
     }
 
     override fun getItemCount(): Int {
@@ -75,49 +81,11 @@ class RecipesAdapter @Inject constructor() : RecyclerView.Adapter<RecipesAdapter
         diffUtilResult.dispatchUpdatesTo(this)
     }
 
-    fun loadImageFromUrl(imageView: ImageView, imageUrl: String) {
-        imageView.load(imageUrl) {
-            crossfade(600)
-            error(R.drawable.ic_error_placeholder)
-        }
-    }
-
-    private fun applyVeganColor(view: View, vegan: Boolean) {
-        if (vegan) {
-            when (view) {
-                is TextView -> {
-                    view.setTextColor(
-                        ContextCompat.getColor(
-                            view.context,
-                            ru.vdh.cleanarch.core.ui.R.color.green
-                        )
-                    )
-                }
-
-                is ImageView -> {
-                    view.setColorFilter(
-                        ContextCompat.getColor(
-                            view.context,
-                            ru.vdh.cleanarch.core.ui.R.color.green
-                        )
-                    )
-                }
-            }
-        }
-    }
-
-    private fun parseHtml(textView: TextView, description: String?) {
-        if (description != null) {
-            val desc = Jsoup.parse(description).text()
-            textView.text = desc
-        }
-    }
-
     interface OnClickListener {
-        fun onToDoItemClick(toDoId: Int)
+        fun onRecipeItemClick(recipeId: Int)
 
         object DoNothing : OnClickListener {
-            override fun onToDoItemClick(toDoId: Int) = Unit
+            override fun onRecipeItemClick(recipeId: Int) = Unit
         }
     }
 }
