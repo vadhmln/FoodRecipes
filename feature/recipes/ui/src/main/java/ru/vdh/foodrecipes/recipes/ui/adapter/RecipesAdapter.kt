@@ -6,11 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
-import org.jsoup.Jsoup
 import ru.vdh.foodrecipes.common.utils.applyVeganColor
 import ru.vdh.foodrecipes.common.utils.parseHtml
 import ru.vdh.foodrecipes.recipes.presentation.model.RecipesPresentationModel
@@ -75,8 +72,8 @@ class RecipesAdapter @Inject constructor() : RecyclerView.Adapter<RecipesAdapter
     fun setData(newData: RecipesPresentationModel) {
         Log.d("AAA", "RecipesAdapter setData")
         val recipesDiffUtil =
-            RecipesDiffUtil(recipes, newData.results)
-        val diffUtilResult = DiffUtil.calculateDiff(recipesDiffUtil)
+            ru.vdh.foodrecipes.common.utils.DiffUtil(recipes, newData.results)
+        val diffUtilResult = androidx.recyclerview.widget.DiffUtil.calculateDiff(recipesDiffUtil)
         recipes = newData.results
         diffUtilResult.dispatchUpdatesTo(this)
     }

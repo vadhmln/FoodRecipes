@@ -1,8 +1,8 @@
-package ru.vdh.foodrecipes.recipes.ui.adapter
+package ru.vdh.foodrecipes.common.utils
 
 import androidx.recyclerview.widget.DiffUtil
 
-class RecipesDiffUtil<T>(
+class DiffUtil<T>(
     private val oldList: List<T>,
     private val newList: List<T>
 ): DiffUtil.Callback() {
