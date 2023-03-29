@@ -6,13 +6,13 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import ru.vdh.foodrecipes.common.utils.Constants.Companion.BASE_IMAGE_URL
-import ru.vdh.foodrecipes.recipedetails.presentation.model.ExtendedIngredientPresentationModel
+import ru.vdh.foodrecipes.recipedetails.presentation.model.ExtendedIngredientsPresentationModel
 import ru.vdh.foodrecipes.recipedetails.ui.databinding.IngredientsRowLayoutBinding
 import java.util.Locale
 
 class IngredientsAdapter : RecyclerView.Adapter<IngredientsAdapter.MyViewHolder>() {
 
-    private var ingredientsList = emptyList<ExtendedIngredientPresentationModel>()
+    private var ingredientsList = emptyList<ExtendedIngredientsPresentationModel>()
 
     class MyViewHolder(val binding: IngredientsRowLayoutBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -47,10 +47,10 @@ class IngredientsAdapter : RecyclerView.Adapter<IngredientsAdapter.MyViewHolder>
         return ingredientsList.size
     }
 
-    fun setData(newIngredients: List<ExtendedIngredientPresentationModel>) {
-        val ingredientsDiffUtil =
-            ru.vdh.foodrecipes.common.utils.DiffUtil(ingredientsList, newIngredients)
-        val diffUtilResult = DiffUtil.calculateDiff(ingredientsDiffUtil)
+    fun setData(newIngredients: List<ExtendedIngredientsPresentationModel>) {
+        val ingredientsRecipesDiffUtil =
+            ru.vdh.foodrecipes.common.utils.RecipesDiffUtil(ingredientsList, newIngredients)
+        val diffUtilResult = DiffUtil.calculateDiff(ingredientsRecipesDiffUtil)
         ingredientsList = newIngredients
         diffUtilResult.dispatchUpdatesTo(this)
     }

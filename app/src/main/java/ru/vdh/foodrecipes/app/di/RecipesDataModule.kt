@@ -52,7 +52,7 @@ class RecipesDataModule {
 
     @Provides
     @Singleton
-    fun provideRecipesRemoteRepository(
+    fun provideRecipesRepository(
         recipesRemoteDataSource: RecipesRemoteDataSource,
         localDataSource: LocalDataSource,
         recipesDataToDomainMapper: RecipesDataToDomainMapper,

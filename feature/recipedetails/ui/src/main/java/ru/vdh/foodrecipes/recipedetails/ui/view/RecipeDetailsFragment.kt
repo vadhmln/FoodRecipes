@@ -3,18 +3,27 @@ package ru.vdh.foodrecipes.recipedetails.ui.view
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
+import androidx.core.content.ContextCompat
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.navArgs
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import ru.vdh.foodrecipes.core.ui.mapper.ViewStateBinder
 import ru.vdh.foodrecipes.core.ui.view.BaseFragment
 import ru.vdh.foodrecipes.core.ui.view.ViewsProvider
+import ru.vdh.foodrecipes.recipedetails.presentation.model.FavoritesPresentationModel
 import ru.vdh.foodrecipes.recipedetails.presentation.model.NewFeaturePresentationNotification
 import ru.vdh.foodrecipes.recipedetails.presentation.model.NewFeatureViewState
 import ru.vdh.foodrecipes.recipedetails.presentation.model.ResultPresentationModel
@@ -41,6 +50,9 @@ class RecipeDetailsFragment :
 
     override val layoutResourceId = R.layout.recipe_details_fragment
 
+    private var recipeSaved = false
+    private var savedRecipeId = 0
+
     @Inject
     override lateinit var destinationMapper:
             NewFeatureDestinationToUiMapper
@@ -64,7 +76,6 @@ class RecipeDetailsFragment :
         savedInstanceState: Bundle?
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
-
 
         Log.e("RecipeDetailsFragment", "RecipeDetailsFragment created!!!")
 
@@ -100,7 +111,143 @@ class RecipeDetailsFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d("RecipeDetailsFragment", "onViewCreatedBeginning ${args.recipeId}")
+        (requireActivity() as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        val menuHost: MenuHost = requireActivity()
+        menuHost.addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.details_menu, menu)
+                val favoriteItem = menu.findItem(R.id.save_to_favorites_menu)
+                checkSavedRecipes(favoriteItem)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean =
+                when {
+                    menuItem.itemId == R.id.save_to_favorites_menu && !recipeSaved -> {
+                        saveToFavorites(menuItem)
+                        true
+                    }
+
+                    menuItem.itemId == R.id.save_to_favorites_menu && recipeSaved -> {
+                        removeFromFavorites(menuItem)
+                        true
+                    }
+
+                    else -> {
+                        false
+                    }
+                }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+    }
+
+    private fun checkSavedRecipes(menuItem: MenuItem): Boolean {
+        viewModel.readFavoriteRecipes.observe(this) { favoritesEntity ->
+            try {
+                for (savedRecipe in favoritesEntity) {
+                    viewModel.recipesLiveData.observe(viewLifecycleOwner) { result ->
+                        result?.let {
+                            val favoriteRecipeId = result.recipeId
+                            if (savedRecipe.result.recipeId == favoriteRecipeId) {
+                                changeMenuItemColor(
+                                    menuItem,
+                                    ru.vdh.cleanarch.core.ui.R.color.yellow
+                                )
+                                savedRecipeId = savedRecipe.id
+                                recipeSaved = true
+                            }
+                            Log.d(
+                                "RecipeDetailsFragment",
+                                "${savedRecipe.result.recipeId}, $favoriteRecipeId"
+                            )
+                        }
+
+                    }
+                }
+            } catch (e: Exception) {
+                Log.d("RecipeDetailsFragment", e.message.toString())
+            }
+        }
+        Log.d("savedRecipeId", savedRecipeId.toString())
+        return true
+    }
+
+    private fun saveToFavorites(item: MenuItem) {
+
+        viewModel.recipesLiveData.observe(viewLifecycleOwner) { result ->
+            result?.let {
+                val favoriteRecipe = FavoritesPresentationModel(
+                    0,
+                    ResultPresentationModel(
+                        it.aggregateLikes,
+                        it.cheap,
+                        it.dairyFree,
+                        it.extendedIngredients,
+                        it.glutenFree,
+                        it.recipeId,
+                        it.image,
+                        it.readyInMinutes,
+                        it.sourceName,
+                        it.sourceUrl,
+                        it.summary,
+                        it.title,
+                        it.vegan,
+                        it.vegetarian,
+                        it.veryHealthy,
+                    )
+                )
+                viewModel.insertFavoriteRecipe(favoriteRecipe)
+                Log.d("RecipeDetailsFragment", it.title)
+            }
+        }
+        changeMenuItemColor(item, ru.vdh.cleanarch.core.ui.R.color.yellow)
+        showSnackBar("Recipe saved.")
+        recipeSaved = true
+    }
+
+    private fun removeFromFavorites(item: MenuItem) {
+        viewModel.recipesLiveData.observe(viewLifecycleOwner) { result ->
+            result?.let {
+                val favoriteRecipe = FavoritesPresentationModel(
+                    savedRecipeId,
+                    ResultPresentationModel(
+                        it.aggregateLikes,
+                        it.cheap,
+                        it.dairyFree,
+                        it.extendedIngredients,
+                        it.glutenFree,
+                        it.recipeId,
+                        it.image,
+                        it.readyInMinutes,
+                        it.sourceName,
+                        it.sourceUrl,
+                        it.summary,
+                        it.title,
+                        it.vegan,
+                        it.vegetarian,
+                        it.veryHealthy,
+                    )
+                )
+                viewModel.deleteFavoriteRecipe(favoriteRecipe)
+                Log.d("RecipeDetailsFragment", it.title)
+            }
+        }
+        changeMenuItemColor(item, ru.vdh.cleanarch.core.ui.R.color.white)
+        showSnackBar("Removed from Favorites.")
+        recipeSaved = false
+        Log.d("savedRecipeId", savedRecipeId.toString())
+    }
+
+    private fun showSnackBar(message: String) {
+        Snackbar.make(
+            binding.detailsLayout,
+            message,
+            Snackbar.LENGTH_SHORT
+        ).setAction("Okay") {}
+            .show()
+    }
+
+    private fun changeMenuItemColor(item: MenuItem, color: Int) {
+        item.icon?.setTint(ContextCompat.getColor(requireContext(), color))
     }
 
     override fun onDestroyView() {

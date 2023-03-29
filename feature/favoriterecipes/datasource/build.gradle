@@ -31,7 +31,10 @@ android {
 }
 
 dependencies {
-    implementation project(path: ':feature:favoriterecipes:data')
+    implementation project(':core:database')
+    implementation project(':feature:favoriterecipes:data')
+
+    implementation(libs.kotlinx.coroutines.android)
 
     implementation libs.androidx.junit.ktx
 }

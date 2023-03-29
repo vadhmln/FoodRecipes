@@ -2,12 +2,12 @@ package ru.vdh.foodrecipes.recipes.ui.mapper
 
 import ru.vdh.foodrecipes.core.ui.mapper.NotificationPresentationToUiMapper
 import ru.vdh.foodrecipes.core.ui.model.NotificationUiModel
-import ru.vdh.foodrecipes.recipes.presentation.model.NewFeaturePresentationNotification
+import ru.vdh.foodrecipes.recipes.presentation.model.RecipesPresentationNotification
 
 class RecipesNotificationPresentationToUiMapper :
-    NotificationPresentationToUiMapper<NewFeaturePresentationNotification> {
+    NotificationPresentationToUiMapper<RecipesPresentationNotification> {
     override fun toUi(
-        presentationNotification: NewFeaturePresentationNotification
+        presentationNotification: RecipesPresentationNotification
     ): NotificationUiModel {
         throw IllegalStateException("Notifications not supported.")
     }

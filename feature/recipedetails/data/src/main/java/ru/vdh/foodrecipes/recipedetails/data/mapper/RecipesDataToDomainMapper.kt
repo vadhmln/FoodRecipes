@@ -1,9 +1,7 @@
 package ru.vdh.foodrecipes.recipedetails.data.mapper
 
-import ru.vdh.foodrecipes.recipedetails.data.model.RecipesDataModel
 import ru.vdh.foodrecipes.recipedetails.data.model.ResultDataModel
-import ru.vdh.foodrecipes.recipedetails.domain.model.ExtendedIngredientDomainModel
-import ru.vdh.foodrecipes.recipedetails.domain.model.RecipesDomainModel
+import ru.vdh.foodrecipes.recipedetails.domain.model.ExtendedIngredientsDomainModel
 import ru.vdh.foodrecipes.recipedetails.domain.model.ResultDomainModel
 
 class RecipesDataToDomainMapper {
@@ -11,11 +9,11 @@ class RecipesDataToDomainMapper {
     fun toDomain(input: ResultDataModel?) =
         input?.let {
             ResultDomainModel(
-                it.aggregateLikes,
+                input.aggregateLikes,
                 input.cheap,
                 input.dairyFree,
                 input.extendedIngredients.map {
-                    ExtendedIngredientDomainModel(
+                    ExtendedIngredientsDomainModel(
                         it.amount,
                         it.consistency,
                         it.image,

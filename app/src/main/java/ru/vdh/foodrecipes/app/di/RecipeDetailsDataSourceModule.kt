@@ -8,6 +8,8 @@ import ru.vdh.foodrecipes.database.RecipesDao
 import ru.vdh.foodrecipes.recipedetails.data.datasource.RecipeDetailsDataSource
 import ru.vdh.foodrecipes.recipedetails.data.mapper.RecipesDataToDomainMapper
 import ru.vdh.foodrecipes.recipedetails.datasource.RecipeDetailsDataSourceImpl
+import ru.vdh.foodrecipes.recipedetails.datasource.mapper.FavoriteRecipeDataToDatabaseMapper
+import ru.vdh.foodrecipes.recipedetails.datasource.mapper.FavoriteRecipeDatabaseToDataMapper
 import ru.vdh.foodrecipes.recipedetails.datasource.mapper.RecipesLocalDatabaseToDataMapper
 import ru.vdh.foodrecipes.recipes.datasource.mapper.ResultDataToDatabaseMapper
 import javax.inject.Singleton
@@ -23,12 +25,22 @@ class RecipeDetailsDataSourceModule {
     fun providesResultDataToDatabaseMapper() = ResultDataToDatabaseMapper()
 
     @Provides
+    fun providesFavoriteRecipeDataToDatabaseMapper() = FavoriteRecipeDataToDatabaseMapper()
+
+    @Provides
+    fun providesFavoriteRecipeDatabaseToDataMapper() = FavoriteRecipeDatabaseToDataMapper()
+
+    @Provides
     @Singleton
-    fun provideLocalDataSource(
+    fun providesRecipeDetailsDataSource(
         recipesDao: RecipesDao,
-        recipesLocalDatabaseToDataMapper: RecipesLocalDatabaseToDataMapper
+        recipesLocalDatabaseToDataMapper: RecipesLocalDatabaseToDataMapper,
+        favoriteRecipeDataToDatabaseMapper: FavoriteRecipeDataToDatabaseMapper,
+        favoriteRecipeDatabaseToDataMapper: FavoriteRecipeDatabaseToDataMapper,
     ): RecipeDetailsDataSource = RecipeDetailsDataSourceImpl(
         recipesDao,
-        recipesLocalDatabaseToDataMapper
+        recipesLocalDatabaseToDataMapper,
+        favoriteRecipeDataToDatabaseMapper,
+        favoriteRecipeDatabaseToDataMapper,
     )
 }

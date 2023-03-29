@@ -28,7 +28,7 @@ import ru.vdh.foodrecipes.common.utils.observeOnce
 import ru.vdh.foodrecipes.core.ui.mapper.ViewStateBinder
 import ru.vdh.foodrecipes.core.ui.view.BaseFragment
 import ru.vdh.foodrecipes.core.ui.view.ViewsProvider
-import ru.vdh.foodrecipes.recipes.presentation.model.NewFeaturePresentationNotification
+import ru.vdh.foodrecipes.recipes.presentation.model.RecipesPresentationNotification
 import ru.vdh.foodrecipes.recipes.presentation.model.RecipesViewState
 import ru.vdh.foodrecipes.recipes.presentation.viewmodel.RecipesFragmentViewModel
 import ru.vdh.foodrecipes.recipes.ui.mapper.RecipesDestinationToUiMapper
@@ -39,19 +39,14 @@ import ru.vdh.foodrecipes.recipes.ui.binder.RecipesViewStateBinder
 import ru.vdh.foodrecipes.recipes.ui.databinding.RecipesFragmentBinding
 import javax.inject.Inject
 
-private const val NO_LAYOUT_RESOURCE = 0
-
 @AndroidEntryPoint
 class RecipesFragment :
-    BaseFragment<RecipesViewState, NewFeaturePresentationNotification>(),
+    BaseFragment<RecipesViewState, RecipesPresentationNotification>(),
     RecipesViewsProvider,
     RecipesViewStateBinder.OnClickListener,
     SearchView.OnQueryTextListener {
 
     private var _binding: RecipesFragmentBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
 
     private val args by navArgs<RecipesFragmentArgs>()

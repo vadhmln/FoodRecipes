@@ -1,9 +1,7 @@
 package ru.vdh.foodrecipes.recipedetails.presentation.mapper
 
-import ru.vdh.foodrecipes.recipedetails.domain.model.RecipesDomainModel
 import ru.vdh.foodrecipes.recipedetails.domain.model.ResultDomainModel
-import ru.vdh.foodrecipes.recipedetails.presentation.model.ExtendedIngredientPresentationModel
-import ru.vdh.foodrecipes.recipedetails.presentation.model.RecipesPresentationModel
+import ru.vdh.foodrecipes.recipedetails.presentation.model.ExtendedIngredientsPresentationModel
 import ru.vdh.foodrecipes.recipedetails.presentation.model.ResultPresentationModel
 
 class RecipesDomainToPresentationMapper {
@@ -15,7 +13,7 @@ class RecipesDomainToPresentationMapper {
                 input.cheap,
                 input.dairyFree,
                 input.extendedIngredients.map {
-                    ExtendedIngredientPresentationModel(
+                    ExtendedIngredientsPresentationModel(
                         it.amount,
                         it.consistency,
                         it.image,

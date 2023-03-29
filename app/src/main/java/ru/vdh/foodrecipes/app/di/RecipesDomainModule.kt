@@ -26,7 +26,7 @@ class RecipesDomainModule {
         )
 
     @Provides
-    fun provideSaveNewFeatureUseCase(
+    fun provideSaveMealAndDietTypeUseCase(
         dataStoreRepository: DataStoreRepository,
         coroutineContextProvider: CoroutineContextProvider
     ): SaveMealAndDietTypeUseCase =

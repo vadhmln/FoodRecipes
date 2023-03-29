@@ -9,5 +9,5 @@ import ru.vdh.foodrecipes.network.model.ResultRemoteDataSourceModel
 class FavoritesEntity(
     @PrimaryKey(autoGenerate = true)
     var id: Int,
-    var result: ResultRemoteDataSourceModel
+    var result: ResultEntity
 )

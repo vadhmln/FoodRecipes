@@ -19,7 +19,7 @@ class RecipesViewStateBinder @Inject constructor(
 
     override fun RecipesViewsProvider.bindState(viewState: RecipesViewState) {
 
-        fragment.adapter.apply { onToDoItemClickListener = _onToDoItemClickListener }
+        fragment.adapter.apply { onRecipeItemClickListener = _onToDoItemClickListener }
 
         if (recyclerView.adapter == null) {
             recyclerView.adapter = fragment.adapter

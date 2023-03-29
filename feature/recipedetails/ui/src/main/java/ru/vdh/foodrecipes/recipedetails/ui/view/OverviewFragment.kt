@@ -9,11 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.navArgs
 import coil.load
 import dagger.hilt.android.AndroidEntryPoint
 import ru.vdh.foodrecipes.common.utils.parseHtml
@@ -37,7 +33,7 @@ class OverviewFragment : Fragment() {
 
         _binding = FragmentOverviewBinding.inflate(inflater, container, false)
 
-        viewModel.liveData.observe(viewLifecycleOwner) { recipeItem ->
+        viewModel.recipesLiveData.observe(viewLifecycleOwner) { recipeItem ->
             recipeItem?.let {
                 binding.mainImageView.load(recipeItem.image)
                 binding.titleTextView.text = recipeItem.title

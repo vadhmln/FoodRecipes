@@ -1,9 +1,7 @@
 package ru.vdh.foodrecipes.recipedetails.datasource.mapper
 
-import ru.vdh.foodrecipes.database.entities.RecipesEntity
 import ru.vdh.foodrecipes.database.entities.ResultEntity
-import ru.vdh.foodrecipes.recipedetails.data.model.ExtendedIngredientDataModel
-import ru.vdh.foodrecipes.recipedetails.data.model.RecipesDataModel
+import ru.vdh.foodrecipes.recipedetails.data.model.ExtendedIngredientsDataModel
 import ru.vdh.foodrecipes.recipedetails.data.model.ResultDataModel
 
 class RecipesLocalDatabaseToDataMapper {
@@ -15,7 +13,7 @@ class RecipesLocalDatabaseToDataMapper {
                 input.cheap,
                 input.dairyFree,
                 input. extendedIngredients.map {
-                    ExtendedIngredientDataModel(
+                    ExtendedIngredientsDataModel(
                         it.amount,
                         it.consistency,
                         it.image,

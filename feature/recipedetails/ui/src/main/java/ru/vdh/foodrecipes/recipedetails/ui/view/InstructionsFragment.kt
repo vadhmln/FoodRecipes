@@ -28,7 +28,7 @@ class InstructionsFragment : Fragment() {
 
         _binding = FragmentInstructionsBinding.inflate(inflater, container, false)
 
-        viewModel.liveData.observe(viewLifecycleOwner) { recipeItem ->
+        viewModel.recipesLiveData.observe(viewLifecycleOwner) { recipeItem ->
             recipeItem?.let {
                 binding.instructionsWebView.webViewClient = object : WebViewClient() {}
                 val websiteUrl: String = recipeItem.sourceUrl

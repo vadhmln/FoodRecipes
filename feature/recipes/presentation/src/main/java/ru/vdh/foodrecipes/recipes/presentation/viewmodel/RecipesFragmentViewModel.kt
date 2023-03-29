@@ -35,7 +35,7 @@ import ru.vdh.foodrecipes.recipes.presentation.destination.NewFeaturePresentatio
 import ru.vdh.foodrecipes.recipes.presentation.mapper.DataStoreDomainToPresentationMapper
 import ru.vdh.foodrecipes.recipes.presentation.mapper.RecipesDatabaseDomainToPresentationMapper
 import ru.vdh.foodrecipes.recipes.presentation.mapper.RecipesDomainToPresentationMapper
-import ru.vdh.foodrecipes.recipes.presentation.model.NewFeaturePresentationNotification
+import ru.vdh.foodrecipes.recipes.presentation.model.RecipesPresentationNotification
 import ru.vdh.foodrecipes.recipes.presentation.model.RecipesViewState
 import ru.vdh.foodrecipes.recipes.presentation.model.RecipesPresentationModel
 import javax.inject.Inject
@@ -50,7 +50,7 @@ class RecipesFragmentViewModel @Inject constructor(
     private val recipesDomainToPresentationMapper: RecipesDomainToPresentationMapper,
     private val recipesDatabaseDomainToPresentationMapper: RecipesDatabaseDomainToPresentationMapper,
     private val application: Application,
-) : BaseViewModel<RecipesViewState, NewFeaturePresentationNotification>(
+) : BaseViewModel<RecipesViewState, RecipesPresentationNotification>(
     useCaseExecutorProvider
 ) {
 

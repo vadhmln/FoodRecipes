@@ -4,7 +4,7 @@ data class ResultDomainModel(
     val aggregateLikes: Int,
     val cheap: Boolean,
     val dairyFree: Boolean,
-    val extendedIngredients:List<ExtendedIngredientDomainModel>,
+    val extendedIngredients:List<ExtendedIngredientsDomainModel>,
     val glutenFree: Boolean,
     val recipeId: Int,
     val image: String,

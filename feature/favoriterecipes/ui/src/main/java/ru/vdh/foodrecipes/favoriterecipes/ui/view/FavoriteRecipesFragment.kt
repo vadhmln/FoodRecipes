@@ -2,28 +2,51 @@ package ru.vdh.foodrecipes.favoriterecipes.ui.view
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import ru.vdh.foodrecipes.core.ui.mapper.ViewStateBinder
 import ru.vdh.foodrecipes.core.ui.view.BaseFragment
 import ru.vdh.foodrecipes.core.ui.view.ViewsProvider
-import ru.vdh.foodrecipes.favoriterecipes.presentation.model.NewFeaturePresentationNotification
-import ru.vdh.foodrecipes.favoriterecipes.presentation.model.NewFeatureViewState
-import ru.vdh.foodrecipes.favoriterecipes.presentation.viewmodel.SecondFeatureFragmentViewModel
+import ru.vdh.foodrecipes.favoriterecipes.presentation.model.FavoritesPresentationModel
+import ru.vdh.foodrecipes.favoriterecipes.presentation.model.FavoriteRecipesPresentationNotification
+import ru.vdh.foodrecipes.favoriterecipes.presentation.model.FavoriteRecipesViewState
+import ru.vdh.foodrecipes.favoriterecipes.presentation.viewmodel.FavoriteRecipesFragmentViewModel
 import ru.vdh.foodrecipes.favoriterecipes.ui.R
+import ru.vdh.foodrecipes.favoriterecipes.ui.adapter.FavoriteRecipesAdapter
 import ru.vdh.foodrecipes.favoriterecipes.ui.databinding.FragmentFavoriteRecipesBinding
+import ru.vdh.foodrecipes.favoriterecipes.ui.mapper.RecipeDetailsNotificationPresentationToUiMapper
 import ru.vdh.foodrecipes.favoriterecipes.ui.mapper.SecondFeatureDestinationToUiMapper
-import ru.vdh.foodrecipes.favoriterecipes.ui.mapper.NewUserNotificationPresentationToUiMapper
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class FavoriteRecipesFragment : BaseFragment<NewFeatureViewState, NewFeaturePresentationNotification>(),
+class FavoriteRecipesFragment :
+    BaseFragment<FavoriteRecipesViewState, FavoriteRecipesPresentationNotification>(),
     FavoriteRecipesViewsProvider {
 
-    override val viewModel: SecondFeatureFragmentViewModel by viewModels()
+    private var _binding: FragmentFavoriteRecipesBinding? = null
+    private val binding get() = _binding!!
+
+    override val viewModel: FavoriteRecipesFragmentViewModel by viewModels()
+
+    private val adapter: FavoriteRecipesAdapter by lazy {
+        FavoriteRecipesAdapter(
+            requireActivity(),
+            viewModel,
+        )
+    }
 
     override val layoutResourceId = R.layout.fragment_favorite_recipes
 
@@ -33,17 +56,16 @@ class FavoriteRecipesFragment : BaseFragment<NewFeatureViewState, NewFeaturePres
 
     @Inject
     override lateinit var notificationMapper:
-            NewUserNotificationPresentationToUiMapper
+            RecipeDetailsNotificationPresentationToUiMapper
 
     @Inject
     @JvmSuppressWildcards
     override lateinit var viewStateBinder:
-            ViewStateBinder<NewFeatureViewState, ViewsProvider>
-    private var _binding: FragmentFavoriteRecipesBinding? = null
+            ViewStateBinder<FavoriteRecipesViewState, ViewsProvider>
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val binding get() = _binding!!
+    override lateinit var noDataImageView: ImageView
+
+    override lateinit var noDataTextView: TextView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -52,21 +74,66 @@ class FavoriteRecipesFragment : BaseFragment<NewFeatureViewState, NewFeaturePres
         super.onCreateView(inflater, container, savedInstanceState)
 
         _binding = FragmentFavoriteRecipesBinding.inflate(inflater, container, false)
-        return binding.root
 
+        val menuHost: MenuHost = requireActivity()
+        menuHost.addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.favorite_recipes_menu, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                if (menuItem.itemId == R.id.deleteAll_favorite_recipes_menu) {
+                    viewModel.deleteAllFavoriteRecipes()
+                    showSnackBar()
+                }
+                return true
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+
+        noDataImageView = binding.noDataImageView
+        noDataTextView = binding.noDataTextView
+
+        setupRecyclerView(binding.favoriteRecipesRecyclerView)
+
+        viewModel.readFavoriteRecipes.observe(viewLifecycleOwner) {
+            SetViewVisibility(noDataImageView, noDataTextView, it, adapter)
+        }
+
+        return binding.root
     }
 
     override fun View.bindViews() {
 
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    private fun setupRecyclerView(recyclerView: RecyclerView) {
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+    }
 
+    private fun showSnackBar() {
+        Snackbar.make(
+            binding.root,
+            "All recipes removed.",
+            Snackbar.LENGTH_SHORT
+        ).setAction("Okay") {}
+            .show()
+    }
 
+    private fun SetViewVisibility(
+        firstView: View,
+        secondView: View,
+        favoritesEntity: List<FavoritesPresentationModel>?,
+        mAdapter: FavoriteRecipesAdapter?
+    ) {
 
-        binding.buttonSecond.setOnClickListener {
-            viewModel.onNewFeatureAction(0)
+        if (favoritesEntity.isNullOrEmpty()) {
+            firstView.visibility = View.VISIBLE
+            secondView.visibility = View.VISIBLE
+        } else {
+            firstView.visibility = View.INVISIBLE
+            secondView.visibility = View.INVISIBLE
+            favoritesEntity.let { mAdapter?.setData(it) }
         }
     }
 

@@ -39,8 +39,7 @@ dependencies {
 
     implementation(libs.bundles.testImplementation)
     implementation(libs.kotlinx.coroutines.android)
-    implementation(libs.androidx.lifecycle.livedata)
-    implementation(libs.androidx.lifecycle.viewmodel)
+    implementation(libs.bundles.lifecycle)
 
     //Hilt
     implementation(libs.hilt.android)

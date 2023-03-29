@@ -18,8 +18,7 @@ import javax.inject.Inject
 class RecipesAdapter @Inject constructor() : RecyclerView.Adapter<RecipesAdapter.MyViewHolder>() {
 
     private val delegateOnClickListener = DelegateOnClickListener()
-
-    var onToDoItemClickListener: OnClickListener = delegateOnClickListener.onToDoItemClickListener
+    var onRecipeItemClickListener: OnClickListener = delegateOnClickListener.onToDoItemClickListener
 
     private var recipes = emptyList<ResultPresentationModel>()
 
@@ -37,7 +36,6 @@ class RecipesAdapter @Inject constructor() : RecyclerView.Adapter<RecipesAdapter
         val clockTextView: TextView by lazy { view.findViewById(R.id.clock_textView) }
         val leafImage: ImageView by lazy { view.findViewById(R.id.leaf_imageView) }
         val leafTextView: TextView by lazy { view.findViewById(R.id.leaf_textView) }
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder =
@@ -60,7 +58,7 @@ class RecipesAdapter @Inject constructor() : RecyclerView.Adapter<RecipesAdapter
         holder.itemView.setOnClickListener {
             Log.d("onRecipeItemClick", "Clicked!!!")
 
-            onToDoItemClickListener.onRecipeItemClick(currentRecipe.recipeId)
+            onRecipeItemClickListener.onRecipeItemClick(currentRecipe.recipeId)
             Log.d("onRecipeItemClick", currentRecipe.recipeId.toString())
         }
     }
@@ -72,7 +70,7 @@ class RecipesAdapter @Inject constructor() : RecyclerView.Adapter<RecipesAdapter
     fun setData(newData: RecipesPresentationModel) {
         Log.d("AAA", "RecipesAdapter setData")
         val recipesDiffUtil =
-            ru.vdh.foodrecipes.common.utils.DiffUtil(recipes, newData.results)
+            ru.vdh.foodrecipes.common.utils.RecipesDiffUtil(recipes, newData.results)
         val diffUtilResult = androidx.recyclerview.widget.DiffUtil.calculateDiff(recipesDiffUtil)
         recipes = newData.results
         diffUtilResult.dispatchUpdatesTo(this)

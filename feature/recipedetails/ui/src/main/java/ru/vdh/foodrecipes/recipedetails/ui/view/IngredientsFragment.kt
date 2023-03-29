@@ -33,7 +33,7 @@ class IngredientsFragment : Fragment() {
 
         setupRecyclerView()
 
-        viewModel.liveData.observe(viewLifecycleOwner) { recipeItem ->
+        viewModel.recipesLiveData.observe(viewLifecycleOwner) { recipeItem ->
             recipeItem?.let {
                 adapter.setData(recipeItem.extendedIngredients)
             }

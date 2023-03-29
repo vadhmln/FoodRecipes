@@ -8,12 +8,12 @@ import ru.vdh.foodrecipes.recipedetails.domain.model.ResultDomainModel
 import ru.vdh.foodrecipes.recipedetails.domain.repository.RecipeDetailsRepository
 
 class GetRecipeItemByIdUseCase(
-    private val updateToDoRepository: RecipeDetailsRepository,
+    private val recipeDetailsRepository: RecipeDetailsRepository,
     private val coroutineContextProvider: CoroutineContextProvider
 ) : BackgroundExecutingUseCase<Int?, Flow<ResultDomainModel?>>(
     coroutineContextProvider
 ) {
 
     override fun executeInBackground(request: Int?) =
-        updateToDoRepository.getItemById(request)
+        recipeDetailsRepository.getItemById(request)
 }
