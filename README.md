@@ -25,6 +25,15 @@
 - Dark and Light Theme
 - Share Data with Other Apps
 - Shimmer Effect
+- Coil
+- Sandwich
+
+Изменения по сравнению с курсом:
+- собственно сама архитектура приложения
+- не использую data binding
+- для обработки риспонсов использую Sandwich
+- не использую парселбл объекты - передаю через идентификатор (по рекомедации Гугл)
+- и еще множество мелких правок
 
 Запускается на:
 Android Studio Electric Eel 
