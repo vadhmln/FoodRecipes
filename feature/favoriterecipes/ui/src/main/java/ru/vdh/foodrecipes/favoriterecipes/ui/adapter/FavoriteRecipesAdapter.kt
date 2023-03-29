@@ -24,7 +24,7 @@ class FavoriteRecipesAdapter @Inject constructor(
 ) : RecyclerView.Adapter<FavoriteRecipesAdapter.MyViewHolder>(), ActionMode.Callback {
 
     private val delegateOnClickListener = DelegateOnClickListener()
-    private var onFavoriteRecipeClickListener: OnClickListener = delegateOnClickListener.onFavoriteRecipeClickListener
+    var onFavoriteRecipeClickListener: OnClickListener = delegateOnClickListener.onFavoriteRecipeClickListener
 
     private var multiSelection = false
 
@@ -88,7 +88,7 @@ class FavoriteRecipesAdapter @Inject constructor(
             if (multiSelection) {
                 applySelection(holder, currentRecipe)
             } else {
-                onFavoriteRecipeClickListener.onFavoriteRecipeClick(currentRecipe.id)
+                onFavoriteRecipeClickListener.onFavoriteRecipeClick(currentRecipe.result.recipeId)
             }
         }
 
@@ -190,7 +190,7 @@ class FavoriteRecipesAdapter @Inject constructor(
     override fun onActionItemClicked(actionMode: ActionMode?, menu: MenuItem?): Boolean {
         if (menu?.itemId == R.id.delete_favorite_recipe_menu) {
             selectedRecipes.forEach {
-//                mainViewModel.deleteFavoriteRecipe(it)
+                viewModel.deleteFavoriteRecipe(it)
             }
             showSnackBar("${selectedRecipes.size} Recipe/s removed.")
 

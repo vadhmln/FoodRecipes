@@ -6,4 +6,8 @@ import ru.vdh.foodrecipes.favoriterecipes.domain.model.FavoritesDomainModel
 interface FavoriteRecipeRepository {
 
     fun getFavoriteRecipes(): Flow<List<FavoritesDomainModel>>
+
+    suspend fun deleteFavoriteRecipe(favoritesEntity: FavoritesDomainModel)
+
+    suspend fun deleteAllFavoriteRecipes()
 }

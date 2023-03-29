@@ -26,22 +26,24 @@ import ru.vdh.foodrecipes.favoriterecipes.presentation.model.FavoriteRecipesView
 import ru.vdh.foodrecipes.favoriterecipes.presentation.viewmodel.FavoriteRecipesFragmentViewModel
 import ru.vdh.foodrecipes.favoriterecipes.ui.R
 import ru.vdh.foodrecipes.favoriterecipes.ui.adapter.FavoriteRecipesAdapter
+import ru.vdh.foodrecipes.favoriterecipes.ui.binder.FavoriteRecipesViewStateBinder
 import ru.vdh.foodrecipes.favoriterecipes.ui.databinding.FragmentFavoriteRecipesBinding
-import ru.vdh.foodrecipes.favoriterecipes.ui.mapper.RecipeDetailsNotificationPresentationToUiMapper
-import ru.vdh.foodrecipes.favoriterecipes.ui.mapper.SecondFeatureDestinationToUiMapper
+import ru.vdh.foodrecipes.favoriterecipes.ui.mapper.FavoriteRecipesNotificationPresentationToUiMapper
+import ru.vdh.foodrecipes.favoriterecipes.ui.mapper.FavoriteRecipesDestinationToUiMapper
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class FavoriteRecipesFragment :
     BaseFragment<FavoriteRecipesViewState, FavoriteRecipesPresentationNotification>(),
-    FavoriteRecipesViewsProvider {
+    FavoriteRecipesViewsProvider,
+    FavoriteRecipesViewStateBinder.OnClickListener {
 
     private var _binding: FragmentFavoriteRecipesBinding? = null
     private val binding get() = _binding!!
 
     override val viewModel: FavoriteRecipesFragmentViewModel by viewModels()
 
-    private val adapter: FavoriteRecipesAdapter by lazy {
+    val adapter: FavoriteRecipesAdapter by lazy {
         FavoriteRecipesAdapter(
             requireActivity(),
             viewModel,
@@ -52,11 +54,11 @@ class FavoriteRecipesFragment :
 
     @Inject
     override lateinit var destinationMapper:
-            SecondFeatureDestinationToUiMapper
+            FavoriteRecipesDestinationToUiMapper
 
     @Inject
     override lateinit var notificationMapper:
-            RecipeDetailsNotificationPresentationToUiMapper
+            FavoriteRecipesNotificationPresentationToUiMapper
 
     @Inject
     @JvmSuppressWildcards
@@ -66,6 +68,9 @@ class FavoriteRecipesFragment :
     override lateinit var noDataImageView: ImageView
 
     override lateinit var noDataTextView: TextView
+
+    override lateinit var recyclerView: RecyclerView
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -92,11 +97,12 @@ class FavoriteRecipesFragment :
 
         noDataImageView = binding.noDataImageView
         noDataTextView = binding.noDataTextView
+        recyclerView = binding.favoriteRecipesRecyclerView
 
         setupRecyclerView(binding.favoriteRecipesRecyclerView)
 
         viewModel.readFavoriteRecipes.observe(viewLifecycleOwner) {
-            SetViewVisibility(noDataImageView, noDataTextView, it, adapter)
+            setViewVisibility(noDataImageView, noDataTextView, it, adapter)
         }
 
         return binding.root
@@ -120,7 +126,7 @@ class FavoriteRecipesFragment :
             .show()
     }
 
-    private fun SetViewVisibility(
+    private fun setViewVisibility(
         firstView: View,
         secondView: View,
         favoritesEntity: List<FavoritesPresentationModel>?,
@@ -130,15 +136,22 @@ class FavoriteRecipesFragment :
         if (favoritesEntity.isNullOrEmpty()) {
             firstView.visibility = View.VISIBLE
             secondView.visibility = View.VISIBLE
+            recyclerView.visibility = View.INVISIBLE
         } else {
             firstView.visibility = View.INVISIBLE
             secondView.visibility = View.INVISIBLE
+            recyclerView.visibility = View.VISIBLE
             favoritesEntity.let { mAdapter?.setData(it) }
         }
+    }
+
+    override fun onItemClick(recipeId: Int) {
+        viewModel.onRecipeDetailsAction(recipeId)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        adapter.clearContextualActionMode()
     }
 }

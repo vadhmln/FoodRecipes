@@ -11,8 +11,7 @@ import javax.inject.Inject
 class RecipesViewStateBinder @Inject constructor(
     private val onToDoItemClickListener: OnClickListener,
     private val fragment: RecipesFragment,
-) :
-    ViewStateBinder<RecipesViewState, RecipesViewsProvider> {
+) : ViewStateBinder<RecipesViewState, RecipesViewsProvider> {
 
     private val _onToDoItemClickListener: RecipesAdapter.OnClickListener =
         DelegateOnClickListener()

@@ -15,10 +15,10 @@ import ru.vdh.foodrecipes.R
 import ru.vdh.foodrecipes.app.navigation.AppFoodJokeDestinationToUiMapper
 import ru.vdh.foodrecipes.app.navigation.AppRecipeDetailsDestinationToUiMapper
 import ru.vdh.foodrecipes.app.navigation.AppRecipesDestinationToUiMapper
-import ru.vdh.foodrecipes.app.navigation.AppSecondFeatureDestinationToUiMapper
+import ru.vdh.foodrecipes.app.navigation.AppFavoriteRecipesDestinationToUiMapper
 import ru.vdh.foodrecipes.navigation.mapper.GlobalDestinationToUiMapper
 import ru.vdh.foodrecipes.recipes.ui.mapper.RecipesDestinationToUiMapper
-import ru.vdh.foodrecipes.favoriterecipes.ui.mapper.SecondFeatureDestinationToUiMapper
+import ru.vdh.foodrecipes.favoriterecipes.ui.mapper.FavoriteRecipesDestinationToUiMapper
 import ru.vdh.foodrecipes.foodjoke.ui.mapper.FoodJokeDestinationToUiMapper
 import ru.vdh.foodrecipes.recipedetails.ui.mapper.NewFeatureDestinationToUiMapper
 
@@ -53,8 +53,8 @@ class NavigationModule {
     fun providesAppSecondFeatureDestinationToUiMapper(
         activity: FragmentActivity,
         globalDestinationToUiMapper: GlobalDestinationToUiMapper
-    ): SecondFeatureDestinationToUiMapper =
-        AppSecondFeatureDestinationToUiMapper(activity, globalDestinationToUiMapper)
+    ): FavoriteRecipesDestinationToUiMapper =
+        AppFavoriteRecipesDestinationToUiMapper(activity, globalDestinationToUiMapper)
 
     @Provides
     fun providesAppFoodJokeDestinationToUiMapper(

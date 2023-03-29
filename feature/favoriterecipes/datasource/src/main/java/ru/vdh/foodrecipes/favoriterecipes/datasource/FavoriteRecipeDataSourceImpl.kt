@@ -12,11 +12,23 @@ class FavoriteRecipeDataSourceImpl(
     private val recipesDao: RecipesDao,
     private val favoriteRecipeDataToDatabaseMapper: FavoriteRecipeDataToDatabaseMapper,
     private val favoriteRecipeDatabaseToDataMapper: FavoriteRecipeDatabaseToDataMapper,
-    ) : FavoriteRecipeDataSource {
+) : FavoriteRecipeDataSource {
+
     override fun getFavoriteRecipes(): Flow<List<FavoritesDataModel>> =
         recipesDao.readFavoriteRecipes().map { list ->
             list.map(favoriteRecipeDatabaseToDataMapper::toData)
         }
 
+    override suspend fun deleteFavoriteRecipe(favoritesEntity: FavoritesDataModel) {
+        recipesDao.deleteFavoriteRecipe(
+            favoriteRecipeDataToDatabaseMapper.toDatabase(
+                favoritesEntity
+            )
+        )
+    }
+
+    override suspend fun deleteAllFavoriteRecipes() {
+        recipesDao.deleteAllFavoriteRecipes()
+    }
 
 }

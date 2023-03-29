@@ -8,33 +8,33 @@ import ru.vdh.foodrecipes.R
 import ru.vdh.foodrecipes.core.presentation.model.PresentationDestination
 import ru.vdh.foodrecipes.core.ui.navigation.model.UiDestination
 import ru.vdh.foodrecipes.navigation.mapper.GlobalDestinationToUiMapper
-import ru.vdh.foodrecipes.favoriterecipes.presentation.destination.SecondFeaturePresentationDestination.NewFeature
-import ru.vdh.foodrecipes.favoriterecipes.ui.mapper.SecondFeatureDestinationToUiMapper
-import ru.vdh.foodrecipes.favoriterecipes.ui.mapper.SecondFeatureDestinationToUiMapper.NewFeatureUiDestination
+import ru.vdh.foodrecipes.favoriterecipes.presentation.destination.FavoriteRecipesPresentationDestination.RecipeDetails
+import ru.vdh.foodrecipes.favoriterecipes.ui.mapper.FavoriteRecipesDestinationToUiMapper
+import ru.vdh.foodrecipes.favoriterecipes.ui.mapper.FavoriteRecipesDestinationToUiMapper.RecipeDetailsUiDestination
 
-class AppSecondFeatureDestinationToUiMapper(
+class AppFavoriteRecipesDestinationToUiMapper(
     private val activity: FragmentActivity,
     private val globalDestinationToUiMapper: GlobalDestinationToUiMapper
-) : SecondFeatureDestinationToUiMapper {
+) : FavoriteRecipesDestinationToUiMapper {
     override fun toUi(
         input: PresentationDestination
     ): UiDestination = when (input) {
-        is NewFeature -> AppNewFeature(activity, input.id)
+        is RecipeDetails -> AppRecipeDetails(activity, input.id)
         else -> globalDestinationToUiMapper.toUi(input)
     }
 
-    private data class AppNewFeature(
+    private data class AppRecipeDetails(
         private val activity: FragmentActivity,
         override val id: Int
-    ) : NewFeatureUiDestination(id) {
+    ) : RecipeDetailsUiDestination(id) {
         override fun navigate() {
 
             val currentFragment =
                 activity.supportFragmentManager.findFragmentById(R.id.navHostFragment)
 
             currentFragment?.findNavController()
-//                ?.navigate(NavGraphDirections.actionGlobalToNavNewFeature())
-            Log.d("AAA", "Add button clicked!!!")
+                ?.navigate(NavGraphDirections.actionGlobalToNavRecipeDetails(id))
+            Log.d("AppRecipeDetails", id.toString())
         }
     }
 

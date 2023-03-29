@@ -34,8 +34,10 @@ class FavoriteRecipeDataModule {
     fun provideFavoriteRecipeRepository(
         favoriteRecipeDataSource: FavoriteRecipeDataSource,
         favoriteRecipeDataToDomainMapper: FavoriteRecipeDataToDomainMapper,
+        favoriteRecipeDomainToDataMapper: FavoriteRecipeDomainToDataMapper,
     ): FavoriteRecipeRepository = FavoriteRecipeRepositoryImpl(
         favoriteRecipeDataSource,
         favoriteRecipeDataToDomainMapper,
+        favoriteRecipeDomainToDataMapper
     )
 }
