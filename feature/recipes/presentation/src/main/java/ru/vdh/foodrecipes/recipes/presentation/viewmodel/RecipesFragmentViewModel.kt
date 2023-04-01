@@ -74,6 +74,7 @@ class RecipesFragmentViewModel @Inject constructor(
     lateinit var errorMassage: String
     var networkStatus = false
     var backOnline = false
+    var isKeyLimited = false
 
     val readMealAndDietType =
         saveMealAndDietTypeUseCase.readMealAndDietType.map(dataStoreDomainToPresentationMapper::toPresentation)
@@ -100,7 +101,21 @@ class RecipesFragmentViewModel @Inject constructor(
                         onStart = { },
                         onComplete = { },
                         onError = {
-                            Log.e("onError", "$it")
+                            it?.let {
+                                when {
+                                    it.contains("402") -> {
+                                        errorMassage = "API Key Limited."
+                                        isKeyLimited = true
+                                    }
+
+                                    it.contains("timeout") -> {
+                                        errorMassage = "Timeout."
+                                        isKeyLimited = false
+                                    }
+                                }
+                            }
+
+                            Log.e("getRecipesSafeCall", errorMassage)
                         }
                     ).asLiveData()
                 recipesResponse = list.map(recipesDomainToPresentationMapper::toPresentation)
@@ -206,12 +221,6 @@ class RecipesFragmentViewModel @Inject constructor(
         }
     }
 
-    private fun offlineCacheRecipes(foodRecipe: RecipesPresentationModel) {
-//        val recipesEntity = RecipesEntity(foodRecipe)
-//        insertRecipes(recipesEntity)
-    }
-
-    //вызывается когда связанная с ней активити/fragment уничтожается
     override fun onCleared() {
         Log.e("AAA", "RecipesFragmentViewModel cleared!!!")
         super.onCleared()

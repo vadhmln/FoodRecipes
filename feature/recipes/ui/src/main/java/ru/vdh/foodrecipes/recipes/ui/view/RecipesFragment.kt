@@ -31,12 +31,12 @@ import ru.vdh.foodrecipes.core.ui.view.ViewsProvider
 import ru.vdh.foodrecipes.recipes.presentation.model.RecipesPresentationNotification
 import ru.vdh.foodrecipes.recipes.presentation.model.RecipesViewState
 import ru.vdh.foodrecipes.recipes.presentation.viewmodel.RecipesFragmentViewModel
-import ru.vdh.foodrecipes.recipes.ui.mapper.RecipesDestinationToUiMapper
-import ru.vdh.foodrecipes.recipes.ui.mapper.RecipesNotificationPresentationToUiMapper
 import ru.vdh.foodrecipes.recipes.ui.R
 import ru.vdh.foodrecipes.recipes.ui.adapter.RecipesAdapter
 import ru.vdh.foodrecipes.recipes.ui.binder.RecipesViewStateBinder
 import ru.vdh.foodrecipes.recipes.ui.databinding.RecipesFragmentBinding
+import ru.vdh.foodrecipes.recipes.ui.mapper.RecipesDestinationToUiMapper
+import ru.vdh.foodrecipes.recipes.ui.mapper.RecipesNotificationPresentationToUiMapper
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -149,45 +149,52 @@ class RecipesFragment :
         return true
     }
 
-    override fun onQueryTextChange(p0: String?): Boolean {
+    override fun onQueryTextChange(query: String?): Boolean {
         return true
     }
 
     private fun readDatabase() {
         lifecycleScope.launch {
             viewModel.readRecipes.observeOnce(viewLifecycleOwner) { responseData ->
-                if (responseData.results.isEmpty()) {
-                    viewModel.errorMassage = "Recipes not found - readDatabase."
-                    handleRequestErrors(errorImageView)
-                    handleRequestErrors(errorTextView)
-                    recyclerView.visibility = View.INVISIBLE
-                    Log.d("RecipesFragment", viewModel.errorMassage)
-                }
-                if (!args.backFromBottomSheet && responseData.results.isNotEmpty()) {
-                    Log.d("RecipesFragment", "readDatabase called!")
-                    adapter.setData(responseData)
-                    hideShimmerEffect()
-                } else if (viewModel.hasInternetConnection()) {
-                    requestApiData()
-                } else {
-                    viewModel.errorMassage = "No Internet Connection."
-                    handleRequestErrors(errorImageView)
-                    handleRequestErrors(errorTextView)
-                    Log.d("RecipesFragment", viewModel.errorMassage)
+                when {
+                    !args.backFromBottomSheet && responseData.results.isNotEmpty() -> {
+                        Log.d("RecipesFragment", "readDatabase called!")
+                        adapter.setData(responseData)
+                        hideShimmerEffect()
+                    }
+
+                    viewModel.hasInternetConnection() -> {
+                        requestApiData()
+                        Log.d("RecipesFragment", "requestApiData() ${viewModel.isKeyLimited}")
+                    }
+
+                    else -> {
+                        viewModel.errorMassage = "No Internet Connection."
+                        setViewVisibility(errorImageView)
+                        setViewVisibility(errorTextView)
+                        Log.d(
+                            "RecipesFragment",
+                            "!viewModel.hasInternetConnection() ${viewModel.errorMassage}"
+                        )
+                    }
                 }
             }
         }
     }
 
-
     private fun requestApiData() {
         viewModel.getRecipes(viewModel.applyQueries())
+        Log.d("RecipesFragment", "requestApiData getRecipes")
         viewModel.recipesResponse.observe(viewLifecycleOwner) { responseData ->
             if (responseData.results.isEmpty()) {
                 viewModel.errorMassage = "Recipes not found."
-                handleRequestErrors(errorImageView)
-                handleRequestErrors(errorTextView)
+                setViewVisibility(errorImageView)
+                setViewVisibility(errorTextView)
                 recyclerView.visibility = View.INVISIBLE
+                Log.d(
+                    "RecipesFragment",
+                    "responseData.results.isEmpty() ${viewModel.errorMassage}"
+                )
             } else {
                 adapter.setData(responseData)
                 hideShimmerEffect()
@@ -221,7 +228,7 @@ class RecipesFragment :
 
     }
 
-    private fun handleRequestErrors(view: View) {
+    private fun setViewVisibility(view: View) {
         when (view) {
             is ImageView -> {
                 if (viewModel.hasInternetConnection()) {

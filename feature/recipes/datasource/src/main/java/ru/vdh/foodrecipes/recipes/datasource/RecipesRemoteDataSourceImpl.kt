@@ -8,16 +8,13 @@ import com.skydoves.sandwich.suspendOnError
 import com.skydoves.sandwich.suspendOnException
 import com.skydoves.sandwich.suspendOnSuccess
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import ru.vdh.foodrecipes.database.RecipesDao
 import ru.vdh.foodrecipes.database.entities.RecipesEntity
 import ru.vdh.foodrecipes.network.FoodRecipesApi
 import ru.vdh.foodrecipes.recipes.data.datasource.RecipesRemoteDataSource
-import ru.vdh.foodrecipes.recipes.data.model.FoodJokeDataModel
 import ru.vdh.foodrecipes.recipes.datasource.mapper.ErrorResponseMapper
-import ru.vdh.foodrecipes.recipes.datasource.mapper.ErrorResponseToDataMapper
 import ru.vdh.foodrecipes.recipes.datasource.mapper.RecipesDataModelToDatabaseMapper
 import ru.vdh.foodrecipes.recipes.datasource.mapper.RecipesRemoteDataSourceToDataMapper
 import ru.vdh.foodrecipes.recipes.datasource.mapper.ResultDataToDatabaseMapper
@@ -45,7 +42,9 @@ class RecipesRemoteDataSourceImpl(
             val recipe = recipesRemoteDataSourceToDataMapper.toData(data)
             val recipeEntity =
                 RecipesEntity(recipesDataModelToDatabaseMapper.toDatabase(recipe))
+
             recipesDao.insertRecipes(recipeEntity)
+
             recipeEntity.foodRecipe.results.forEach {
                 recipesDao.insertResultRecipes(resultDataToDatabaseMapper.toDatabase(it))
             }
@@ -55,7 +54,7 @@ class RecipesRemoteDataSourceImpl(
             Log.d("onError", message())
             map(ErrorResponseMapper) {
                 onError("[Code: $code]: $message")
-                Log.d("onError", "[Code: $code]: $message")
+                Log.d("ErrorResponseMapper", "[Code: $code]: $message")
                 when {
                     code == 402 -> {
                         message = "API Key Limited."
@@ -87,11 +86,6 @@ class RecipesRemoteDataSourceImpl(
         }.suspendOnException { error(message()) }
 
     }.flowOn(Dispatchers.IO)
-
-    override suspend fun getFoodJoke(apiKey: String): Flow<FoodJokeDataModel> {
-        TODO()
-//        return foodRecipesApi.getFoodJoke(apiKey).map(jokesRemoteDataSourceToDataMapper::toData)
-    }
 }
 
 

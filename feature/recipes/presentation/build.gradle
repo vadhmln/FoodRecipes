@@ -43,9 +43,6 @@ dependencies {
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.bundles.lifecycle)
 
-//    implementation(libs.androidx.lifecycle.livedata)
-//    implementation(libs.androidx.lifecycle.viewmodel)
-
     implementation(libs.retrofit.core)
     implementation(libs.retrofit.kotlin.serialization)
     implementation(libs.kotlinx.serialization.json)

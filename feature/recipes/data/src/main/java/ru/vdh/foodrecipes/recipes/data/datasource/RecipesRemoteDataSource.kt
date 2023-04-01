@@ -16,5 +16,5 @@ interface RecipesRemoteDataSource {
 
     suspend fun searchRecipes(searchQuery: Map<String, String>): Flow<RecipesDataModel>
 
-    suspend fun getFoodJoke(apiKey: String): Flow<FoodJokeDataModel>
+
 }

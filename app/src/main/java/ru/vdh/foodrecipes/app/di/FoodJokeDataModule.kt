@@ -1,35 +1,43 @@
 package ru.vdh.foodrecipes.app.di
 
-import android.content.Context
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import ru.vdh.foodrecipes.foodjoke.data.datasource.NewFeatureDataSource
-import ru.vdh.foodrecipes.foodjoke.data.mapper.NewFeatureDataToDataSourceMapper
-import ru.vdh.foodrecipes.foodjoke.datasource.SharedPrefNewFeatureDataSource
-import ru.vdh.foodrecipes.foodjoke.presentation.mapper.NewFeatureDomainToPresentationMapper
-import ru.vdh.foodrecipes.foodjoke.presentation.mapper.NewFeaturePresentationToDomainMapper
-
-
+import ru.vdh.foodrecipes.foodjoke.data.datasource.FoodJokeDataSource
+import ru.vdh.foodrecipes.foodjoke.data.mapper.FoodJokeDataToDomainMapper
+import ru.vdh.foodrecipes.foodjoke.data.mapper.FoodJokeTextDomainToDataMapper
+import ru.vdh.foodrecipes.foodjoke.data.repository.FoodJokeRepositoryImpl
+import ru.vdh.foodrecipes.foodjoke.domain.repository.FoodJokeRepository
+import ru.vdh.foodrecipes.foodjoke.presentation.mapper.FoodJokeDomainToPresentationMapper
+import ru.vdh.foodrecipes.foodjoke.presentation.mapper.FoodJokeTextDomainToPresentationMapper
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 class FoodJokeDataModule {
 
+    @Provides
+    fun providesFoodJokeDataToDomainMapper() = FoodJokeDataToDomainMapper()
 
     @Provides
-    fun providesNewFeatureDataModelToDataSourceMapper() = NewFeatureDataToDataSourceMapper()
+    fun providesFoodJokeDomainToPresentationMapper() = FoodJokeDomainToPresentationMapper()
 
     @Provides
-    fun providesNewFeaturePresentationToDomainMapper() = NewFeaturePresentationToDomainMapper()
+    fun providesFoodJokeTextDomainToPresentationMapper() = FoodJokeTextDomainToPresentationMapper()
 
     @Provides
-    fun providesNewFeatureDomainToPresentationMapper() = NewFeatureDomainToPresentationMapper()
+    fun providesFoodJokeTextDomainToDataMapper() = FoodJokeTextDomainToDataMapper()
 
-
-
-
+    @Provides
+    @Singleton
+    fun provideFoodJokeRepository(
+        foodJokeDataSource: FoodJokeDataSource,
+        foodJokeDataToDomainMapper: FoodJokeDataToDomainMapper,
+        foodJokeTextDomainToDataMapper: FoodJokeTextDomainToDataMapper,
+    ): FoodJokeRepository = FoodJokeRepositoryImpl(
+        foodJokeDataSource,
+        foodJokeDataToDomainMapper,
+        foodJokeTextDomainToDataMapper
+    )
 }

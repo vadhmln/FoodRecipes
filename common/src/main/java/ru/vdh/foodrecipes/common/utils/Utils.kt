@@ -1,12 +1,16 @@
 package ru.vdh.foodrecipes.common.utils
 
 import android.app.Activity
+import android.app.Application
 import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.text.Editable
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
@@ -84,3 +88,17 @@ fun String.toEditable(): Editable = Editable.Factory.getInstance().newEditable(t
 @OptIn(FlowPreview::class)
 suspend fun <T> Flow<List<T>>.flattenToList() =
     flatMapConcat { it.asFlow() }.toList()
+
+//fun hasInternetConnection(): Boolean {
+//    val connectivityManager = (Activity()).application.getSystemService(
+//        Context.CONNECTIVITY_SERVICE
+//    ) as ConnectivityManager
+//    val activeNetwork = connectivityManager.activeNetwork ?: return false
+//    val capabilities = connectivityManager.getNetworkCapabilities(activeNetwork) ?: return false
+//    return when {
+//        capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+//        capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+//        capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
+//        else -> false
+//    }
+//}

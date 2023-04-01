@@ -31,7 +31,12 @@ android {
 }
 
 dependencies {
-    implementation project(path: ':feature:foodjoke:data')
+    implementation project(':core:database')
+    implementation project(':core:network')
+    implementation project(':feature:foodjoke:data')
 
+    implementation(libs.kotlinx.coroutines.android)
+
+    implementation 'com.github.skydoves:sandwich:1.3.4'
     implementation libs.androidx.junit.ktx
 }

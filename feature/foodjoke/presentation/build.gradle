@@ -33,14 +33,14 @@ android {
 }
 
 dependencies {
+    implementation project(':common')
     implementation project(':core:presentation')
     implementation project(':core:domain')
     implementation project(':feature:foodjoke:domain')
 
     implementation(libs.bundles.testImplementation)
     implementation(libs.kotlinx.coroutines.android)
-    implementation(libs.androidx.lifecycle.livedata)
-    implementation(libs.androidx.lifecycle.viewmodel)
+    implementation(libs.bundles.lifecycle)
 
     //Hilt
     implementation(libs.hilt.android)
