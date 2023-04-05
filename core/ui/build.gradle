@@ -36,6 +36,7 @@ dependencies {
     implementation project(':core:presentation')
 
     implementation(libs.bundles.android.core)
+    implementation "androidx.core:core-splashscreen:1.0.0"
     implementation(libs.bundles.fragment)
 
     //Hilt

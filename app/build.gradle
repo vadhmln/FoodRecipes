@@ -80,6 +80,7 @@ dependencies {
     implementation project (':feature:recipedetails:datasource')
 
     implementation(libs.bundles.android.core)
+    implementation "androidx.core:core-splashscreen:1.0.0"
     implementation(libs.bundles.fragment)
     implementation(libs.kotlinx.coroutines.android)
     implementation libs.bundles.lifecycle

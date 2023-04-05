@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
@@ -24,8 +25,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
-
+//        setTheme(ru.vdh.cleanarch.core.ui.R.style.AppTheme)
+//        splashScreen.setKeepOnScreenCondition { true }
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
